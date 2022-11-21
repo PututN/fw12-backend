@@ -56,6 +56,7 @@ CREATE TABLE "casts" (
 );
 
 
+
 CREATE TABLE "movieCasts" (
     "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     "movieId"   INT,
@@ -156,3 +157,60 @@ VALUES ('Adventure');
 
 INSERT INTO genre (name)
 VALUES ('Action'), ('Sci-Fi');
+
+INSERT INTO users (picture, "firstName", "lastName", "phoneNumber",email,password)
+VALUES ('https://media-exp1.licdn.com/dms/image/C4E03AQH_PHpvfAUWGA/profile-displayphoto-shrink_800_800/0/1516767917729?e=2147483647&v=beta&t=yr78w5oBNrk0_mWQS9ohTP0RrciRPHYxjdX5eZcYNhY', 'Putut', 'Nardianto', '0895421483102', 'pututnardiantol@gmail.com', '12345');
+
+SELECT * FROM users;
+
+INSERT INTO "resetPassword" ("email", "userId")
+VALUES ('pututnardiantol@gmail.com', 1);
+SELECT * FROM "resetPassword";
+
+INSERT INTO "movieGenre" ("genreId")
+VALUES (3);
+
+SELECT * FROM "movieGenre";
+
+
+INSERT INTO casts (name)
+VALUES ('Tom Holland'), ('Michael Keaton'), ('Robert Downey Jr.');
+SELECT * FROM casts;
+
+INSERT INTO "movieCasts" ("movieId","castsId")
+VALUES (1,1), (1,2), (1,3);
+SELECT * FROM "movieCasts";
+
+
+INSERT INTO "cinemas" ("picture", "name", "address", "city")
+VALUES ('https://static.wikia.nocookie.net/logopedia/images/c/cf/Logo_Cinema21-transparent.png', 'CineOne21', 'Downcare street  No. 21,
+East Purwokerto', 'Purwokerto');
+SELECT * FROM "cinemas";
+
+INSERT INTO "movieSchedules" ("movieId", "cinemaId", "price", "startDate", "endDate")
+VALUES (1, 1, 30, '2022-11-21', '2022-12-21');
+SELECT * FROM "movieSchedules";
+
+INSERT INTO "movieScheduleTimes" ("time", "movieScheduleId")
+VALUES ('00:00', 1);
+SELECT * FROM "movieScheduleTimes";
+
+INSERT INTO "status" (name)
+VALUES ('Ticket in active'), ('Ticket used'), ('Ticket expired');
+SELECT * FROM "status";
+
+INSERT INTO "transaction" ("bookingDate", "movieId", "cinemaId", "movieScheduleId", "fullName", "email", "phoneNumber", "statusId")
+VALUES ('2022-11-21', 1, 1, 1, 'Putut Nardianto', 'pututnardiantol@gmail.com', '0895421483102', 1);
+SELECT * FROM "transaction";
+
+INSERT INTO "reservedSeat" ("seatNum", "transactionId")
+VALUES ('C14', 1);
+SELECT * FROM "reservedSeat";
+
+INSERT INTO "paymentMethod" ("picture", "name")
+VALUES ('https://1.bp.blogspot.com/-Iq0Ztu117_8/XzNYaM4ABdI/AAAAAAAAHA0/MabT7B02ErIzty8g26JvnC6cPeBZtATNgCLcBGAsYHQ/s1000/logo-ovo.png', 'OVO');
+SELECT * FROM "paymentMethod";
+
+INSERT INTO "subscribers" ("email")
+VALUES ('pututnardiantol@gmail.com');
+SELECT * FROM "subscribers";
