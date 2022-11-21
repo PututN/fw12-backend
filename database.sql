@@ -141,3 +141,18 @@ CREATE TABLE "subscribers" (
     "updateAt" TIMESTAMPTZ
 );
 
+INSERT into movies (title,picture,"releaseDate",director,duration,synopsis)
+values ('Spider-Man: Homecoming', 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg', '2017-06-28 00:00:00', 'Jon Watss', '02:13:00','Thrilled by his experience with the Avengers, Peter returns home, where he lives with his Aunt May, under the watchful eye of his new mentor Tony Stark, Peter tries to fall back into his normal daily routine - distracted by thoughts of proving himself to be more than just your friendly neighborhood Spider-Man - but when the Vulture emerges as a new villain, everything that Peter holds most important will be threatened. ');
+
+SELECT * FROM movies;
+
+ALTER TABLE genre
+  ALTER COLUMN name TYPE VARCHAR;
+
+SELECT * FROM genre;
+
+INSERT INTO genre (name)
+VALUES ('Adventure');
+
+INSERT INTO genre (name)
+VALUES ('Action'), ('Sci-Fi');
