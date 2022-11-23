@@ -1,31 +1,22 @@
-const readAllUsers = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: 'list data of users'
-  })
+const {readAllUsers, readUser, deletedUser, createUsers , updatedUsers} = require('../models/users.model')
+
+const readAll = (req, res) => {
+
+  readAllUsers(req, res)
 }
-const readUser = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: 'data of user'
-  })
+
+const readUserId = (req, res) => {
+
+  readUser(req,res)
 }
-const createUsers = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: 'user created successfully'
-  })
+const createAllUsers = (req, res) => {
+  createUsers (req, res)
+  }
+
+const deletedUserId = (req, res) => {
+deletedUser(req,res)
 }
-const deletedUsers = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: 'Deleted user successfully'
-  })
+const updatedUserId = (req, res) => {
+  updatedUsers(req,res)
 }
-const updatedUsers = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: 'Updated user successfully'
-  })
-}
-module.exports = {readAllUsers, createUsers, deletedUsers, updatedUsers, readUser} //sama saja dengan export.readAllUsers dll
+module.exports = {readAll, createAllUsers, deletedUserId, updatedUserId, readUserId} //sama saja dengan export.readAllUsers dll

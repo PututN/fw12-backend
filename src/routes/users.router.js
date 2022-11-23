@@ -1,11 +1,11 @@
 const usersRouter = require('express').Router()
 
-const { readAllUsers, createUsers, deletedUsers, updatedUsers, readUser } = require('../controllers/users.controller') //import dari controller
-
-usersRouter.get('/', readAllUsers ) //ketika /users method get kita kembalikan ke users.controller (readAllUsers)
-usersRouter.get('/:id', readUser ) //ketika /users/id method get kita kembalikan ke users.controller(readUser)
-usersRouter.post('/', createUsers ) //ketika method get kita kembalikan ke users.controller (createUsers)
-usersRouter.delete('/:id', deletedUsers ) //ketika method get kita kembalikan ke users.controller (deletedUsers)
-usersRouter.patch('/:id', updatedUsers ) //ketika method get kita kembalikan ke users.controller (updatedUsers)
+const { readAll, createAllUsers, deletedUserId, updatedUserId, readUserId } = require('../controllers/users.controller') //import dari controller
+//akhir dari url endpoint untuk menjalan method
+usersRouter.get('/', readAll ) //kirim data melalui query string
+usersRouter.get('/:id', readUserId ) //kirim data melalui query string
+usersRouter.post('/', createAllUsers ) //kirim data melalui query string & body (digunakan utk mengirimkan data yang tidak terlihat scara kasat mata)
+usersRouter.delete('/:id', deletedUserId ) //kirim data melalui query string
+usersRouter.patch('/:id', updatedUserId )//kirim data melalui query string & body (digunakan utk mengirimkan data yang tidak terlihat scara kasat mata ex ketika login)
 
 module.exports = usersRouter
