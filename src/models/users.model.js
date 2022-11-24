@@ -1,99 +1,31 @@
-const postgree = require('../helpers/db.helper.js')
+const db = require('../helpers/db.helper.js')
 
-const readAllUsers= (req, res) => { //wajib pake 2 parameter karena yang digunakan response
-  postgree.query('SELECT * FROM users', (error,result) => {
-    if(error) {
-      return res.status(500).json({
-        success: false,
-        message: "Access database failed"
-    })
-  } else {
-      return res.status(200).json({
-        success: true,
-        message: "Access database success",
-        data: result.rows,
-      })
-  }
-  }
-  )
+const readAllUsers= (data, cb) => { //wajib pake 2 parameter karena yang digunakan response
+  db.query('SELECT * FROM users', cb)
 }
 
-const readUser = (req, res) => {
-
-  postgree.query(`SELECT * FROM users WHERE id=${req.params.id}`, (error,result) => {
-    if(error) {
-      return res.status(500).json({
-        success: false,
-        message: "Access database failed"
-    })
-  } else {
-      return res.status(200).json({
-        success: true,
-        message: "Access database success",
-        data: result.rows,
-      })
-  }
-  }
-  )
+const readUser = (data, cb) => {
+  const sql = `SELECT * FROM users WHERE id=$1`
+  const value = [data.id]
+  db.query(sql, value, cb)
 }
 
-const deletedUser = (req, res) => {
-
-  postgree.query(`DELETE FROM users WHERE id=${req.params.id}`, (error,result) => {
-    if(error) {
-      return res.status(500).json({
-        success: false,
-        message: "Delete user failed"
-    })
-  } else {
-      return res.status(200).json({
-        success: true,
-        message: "Delete user success",
-        data: result.rows,
-      })
-  }
-  }
-  )
+const deletedUser = (data, cb) => {
+  const sql = `DELETE FROM users WHERE id=$1`
+  const value = [data.id]
+  db.query(sql, value, cb)
 }
 
-const createUsers = (req, res) => {
-
-  postgree.query(`INSERT INTO users("firstName", "lastName", "phoneNumber", "email", "password")
-  VALUES('${req.body.firstName}', '${req.body.lastName}', '${req.body.phoneNumber}', '${req.body.email}', '${req.body.password}')
-  `, (error,result) => {
-    if(error) {
-      return res.status(500).json({
-        success: false,
-        message: "Create user failed"
-    })
-  } else {
-      return res.status(200).json({
-        success: true,
-        message: "Create user success",
-        data: result.rows,
-      })
-  }
-  }
-  )
+const createUsers = (data, cb) => { //parameter "data" tipe datanya harus object
+  const sql = 'INSERT INTO users("picture", "firstName", "lastName", "phoneNumber", "email", "password") VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+  const value = [data.picture, data.firstName, data.lastName, data.phoneNumber, data.email, data.password];
+  db.query(sql, value, cb)
 }
 
-
-const updatedUsers = (req, res) => {
-
-  postgree.query(`UPDATE users SET "firstName" = '${req.body.firstName}', "lastName" = '${req.body.lastName}', "phoneNumber" = '${req.body.phoneNumber}', "email" = '${req.body.email}', "password" = '${req.body.password}' WHERE id=${req.params.id}`, (error,result) => {
-    if(error) {
-      return res.status(500).json({
-        success: false,
-        message: "Updated user failed"
-    })
-  } else {
-      return res.status(200).json({
-        success: true,
-        message: "Updated user success",
-      })
-  }
-  }
-  )
+const updatedUsers = (data, cb) => {
+  const sql = 'UPDATE users SET "firstName" = $1, "lastName" = $2, "phoneNumber" = $3, "email" = $4, "password" = $5, "picture" = $6, "updateAt" = $8 WHERE id= $7 RETURNING *';
+  const value = [data.body.firstName, data.body.lastName, data.body.phoneNumber, data.body.email, data.body.password, data.body.picture, data.params.id, new Date()];
+  db.query(sql, value, cb)
 }
 
 module.exports = {readAllUsers, readUser, deletedUser, createUsers, updatedUsers}
