@@ -14,5 +14,7 @@ routes.use('/paymentMethod', require('./paymentMethod.router'))
 routes.use('/reservedNum', require('./reservedNum.router'))
 routes.use('/resetPassword', require('./resetPassword.router'))
 routes.use('/cinemas', require('./cinemas.router'))
+routes.use('/movieSchedules', require('./movieSchedules.router'))
+routes.use('/transaction', require('./transaction.router'))
 
 module.exports = routes
