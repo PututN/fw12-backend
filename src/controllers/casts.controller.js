@@ -1,18 +1,23 @@
-const {modelAllCasts, modelDeleteCasts, modelUpdateCasts, modelCreateCasts} = require('../models/casts.model')
+const {modelAllCasts, modelDeleteCasts, modelUpdateCasts, modelCreateCasts, selectCountAllCasts} = require('../models/casts.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require('../helpers/filter.helper')
 
 const allCasts = (req, res) => {
-
-  modelAllCasts(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
+  const sortable = ['name', 'createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllCasts, res, (filter,pageInfo) => {
+    modelAllCasts(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Casts success loaded",
+        pageInfo,
+        results: data.rows
+  }
+  )
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data Casts success loaded",
-      results: data.rows
-    }
-    )
+  )
   }
   )
 }

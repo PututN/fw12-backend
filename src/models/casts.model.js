@@ -1,7 +1,14 @@
 const db = require('../helpers/db.helper')
 
-const modelAllCasts = (data, cb) => {
-  db.query('SELECT * FROM casts', cb)
+const modelAllCasts = (filter, cb) => {
+  const sql = `SELECT * FROM casts WHERE name LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+const selectCountAllCasts = (filter, cb) => {
+  const sql = `SELECT COUNT("name") AS "totalData" FROM "casts" WHERE name LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
 }
 
 const modelDeleteCasts = (data, cb) => {
@@ -23,4 +30,4 @@ const modelCreateCasts = (data, cb) => {
 
 }
 
-module.exports = {modelAllCasts, modelDeleteCasts, modelUpdateCasts, modelCreateCasts}
+module.exports = {modelAllCasts, selectCountAllCasts, modelDeleteCasts, modelUpdateCasts, modelCreateCasts}
