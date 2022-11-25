@@ -34,7 +34,7 @@ const deleteResetPassword = (req, res) => {
 
 const updateResetPassword = (req, res) => {
 
-  modelUpdateResetPassword(req, (err, data) => {
+  modelUpdateResetPassword(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

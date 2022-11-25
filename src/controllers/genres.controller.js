@@ -34,7 +34,7 @@ const deleteGenre = (req, res) => {
 
 const updateGenreId = (req, res) => {
 
-  modelUpdateGenre(req, (err, data) => {
+  modelUpdateGenre(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

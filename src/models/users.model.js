@@ -22,9 +22,9 @@ const createUsers = (data, cb) => { //parameter "data" tipe datanya harus object
   db.query(sql, value, cb)
 }
 
-const updatedUsers = (data, cb) => {
-  const sql = 'UPDATE users SET "firstName" = $1, "lastName" = $2, "phoneNumber" = $3, "email" = $4, "password" = $5, "picture" = $6, "updateAt" = $8 WHERE id= $7 RETURNING *';
-  const value = [data.body.firstName, data.body.lastName, data.body.phoneNumber, data.body.email, data.body.password, data.body.picture, data.params.id, new Date()];
+const updatedUsers = (data, id, cb) => {
+  const sql = `UPDATE users SET "firstName" = COALESCE(NULLIF($1, ''), "firstName"), "lastName" = COALESCE(NULLIF($2, ''), "lastName"), "phoneNumber" = COALESCE(NULLIF($3, ''), "phoneNumber"), "email" = COALESCE(NULLIF($4, ''), "email"), "password" = COALESCE(NULLIF($5, ''), "password"), "picture" = COALESCE(NULLIF($6, ''), "picture") WHERE id= $7 RETURNING *`;
+  const value = [data.firstName, data.lastName, data.phoneNumber, data.email, data.password, data.picture, id];
   db.query(sql, value, cb)
 }
 

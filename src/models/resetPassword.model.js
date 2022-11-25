@@ -10,9 +10,9 @@ const modelDeleteResetPassword = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateResetPassword = (data, cb) => {
-  const sql = 'UPDATE "resetPassword" SET "email" = $1, "userId" = $4, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.email, data.params.id, new Date(), data.body.userId]
+const modelUpdateResetPassword = (data, id, cb) => {
+  const sql = `UPDATE "resetPassword" SET "email" = COALESCE(NULLIF($1, ''), "email"), "userId" = COALESCE(NULLIF($3, '')::INTEGER, "userId") WHERE id =$2 RETURNING *`
+  const value = [data.email, id, data.userId]
   db.query(sql,value,cb)
 }
 

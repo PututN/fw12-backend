@@ -10,9 +10,9 @@ const modelDeleteGenre = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateGenre = (data, cb) => {
-  const sql = 'UPDATE genre SET "name" = $1, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.name, data.params.id, new Date()]
+const modelUpdateGenre = (data, id, cb) => {
+  const sql = `UPDATE genre SET "name" = COALESCE(NULLIF($1,''), "name") WHERE id =$2 RETURNING *`
+  const value = [data.name, id]
   db.query(sql,value,cb)
 }
 

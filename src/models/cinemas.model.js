@@ -16,9 +16,9 @@ const modelDeleteCinemasId = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateCinemasId = (data, cb) => {
-  const sql = 'UPDATE cinemas SET "picture" = $1, "name" = $2, "address" = $3, "city" = $4, "updateAt" = $5 WHERE id =$6 RETURNING *'
-  const value = [data.body.picture, data.body.name, data.body.address, data.body.city, new Date(), data.params.id]
+const modelUpdateCinemasId = (data, id, cb) => {
+  const sql = `UPDATE cinemas SET "picture" = COALESCE(NULLIF($1, ''), "picture"), "name" = COALESCE(NULLIF($2, ''), "name"), "address" = COALESCE(NULLIF($3, ''), "address"), "city" = COALESCE(NULLIF($4, ''), "city"), WHERE id =$5 RETURNING *`
+  const value = [data.picture, data.name, data.address, data.city, id]
   db.query(sql,value,cb)
 }
 

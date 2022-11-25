@@ -16,9 +16,9 @@ const modelDeleteTransactionId = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateTransaction = (data, cb) => {
-  const sql = 'UPDATE transaction SET "bookingDate" = $1, "movieId" = $2, "cinemaId" = $3, "movieScheduleId" = $4, "fullName" = $5, "email" = $6, "phoneNumber" = $7, "statusId" = $8, "updateAt" = $10 WHERE id =$9 RETURNING *'
-  const value = [data.body.bookingDate, data.body.movieId, data.body.cinemaId, data.body.movieScheduleId, data.body.fullName, data.body.email, data.body.phoneNumber, data.statusId, data.params.id, new Date()]
+const modelUpdateTransaction = (data, id, cb) => {
+  const sql = `UPDATE transaction SET "bookingDate" = COALESCE(NULLIF($1, '')::TIMESTAMPTZ, "bookingDate"), "movieId" = COALESCE(NULLIF($2, '')::INTEGER, "movieId"), "cinemaId" = COALESCE(NULLIF($3, '')::INTEGER, "cinemaId"), "movieScheduleId" = COALESCE(NULLIF($4, '')::INTEGER, "movieScheduleId"), "fullName" = COALESCE(NULLIF($5, ''), "fullName"), "email" = COALESCE(NULLIF($6, ''), "email"), "phoneNumber" = COALESCE(NULLIF($7, ''), "phoneNumber"), "statusId" = COALESCE(NULLIF($8, '')::INTEGER, "statusId") WHERE id =$9 RETURNING *`
+  const value = [data.bookingDate, data.movieId, data.cinemaId, data.movieScheduleId, data.fullName, data.email, data.phoneNumber, data.statusId, id]
   db.query(sql,value,cb)
 }
 

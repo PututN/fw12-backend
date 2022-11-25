@@ -34,7 +34,7 @@ const deleteReservedNum = (req, res) => {
 
 const updateReservedNum = (req, res) => {
 
-  modelUpdateReservedNum(req, (err, data) => {
+  modelUpdateReservedNum(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

@@ -10,9 +10,9 @@ const modelDeletePaymentMethod = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdatePaymentMethod = (data, cb) => {
-  const sql = 'UPDATE "paymentMethod" SET "picture" = $1, "name" = $4, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.picture, data.params.id, new Date(), data.body.name]
+const modelUpdatePaymentMethod = (data, id, cb) => {
+  const sql = `UPDATE "paymentMethod" SET "picture" = COALESCE(NULLIF($1, ''), "picture"), "name" = COALESCE(NULLIF($3, ''), "name") WHERE id =$2 RETURNING *`
+  const value = [data.picture, id, data.name]
   db.query(sql,value,cb)
 }
 

@@ -39,7 +39,7 @@ const deleteCasts = (req, res) => {
 
 const updateCasts = (req, res) => {
 
-  modelUpdateCasts(req, (err, data) => {
+  modelUpdateCasts(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

@@ -34,7 +34,7 @@ const deleteMovieCasts = (req, res) => {
 
 const updateMovieCasts = (req, res) => {
 
-  modelUpdateMovieCasts(req, (err, data) => {
+  modelUpdateMovieCasts(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

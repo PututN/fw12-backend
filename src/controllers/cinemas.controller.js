@@ -48,7 +48,7 @@ const deleteCinemasId = (req, res) => {
 
 const updateCinemasId = (req, res) => {
 
-  modelUpdateCinemasId(req, (err, data) => {
+  modelUpdateCinemasId(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

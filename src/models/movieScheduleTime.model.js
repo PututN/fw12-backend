@@ -10,9 +10,9 @@ const modelDeleteMovieScheduleTime = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateMovieScheduleTime = (data, cb) => {
-  const sql = 'UPDATE "movieScheduleTimes" SET "time" = $1, "movieScheduleId" = $4, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.time, data.params.id, new Date(), data.body.movieScheduleId]
+const modelUpdateMovieScheduleTime = (data, id, cb) => {
+  const sql = `UPDATE "movieScheduleTimes" SET "time" = COALESCE(NULLIF($1, '')::time , "time"), "movieScheduleId" = COALESCE(NULLIF($3, '')::INTEGER , "movieScheduleId") WHERE id =$2 RETURNING *`
+  const value = [data.time, id, data.movieScheduleId]
   db.query(sql,value,cb)
 }
 

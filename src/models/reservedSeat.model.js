@@ -10,9 +10,9 @@ const modelDeleteReservedNum = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateReservedNum = (data, cb) => {
-  const sql = 'UPDATE "reservedSeat" SET "seatNum" = $1, "transactionId" = $4, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.seatNum, data.params.id, new Date(), data.body.transactionId]
+const modelUpdateReservedNum = (data, id, cb) => {
+  const sql = `UPDATE "reservedSeat" SET "seatNum" = COALESCE(NULLIF($1, ''), "seatNum"), "transactionId" = COALESCE(NULLIF($3, '')::INTEGER, "transactionId") WHERE id =$2 RETURNING *`
+  const value = [data.seatNum, id, data.transactionId]
   db.query(sql,value,cb)
 }
 

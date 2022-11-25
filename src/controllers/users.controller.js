@@ -56,7 +56,7 @@ const deletedUserId = (req, res) => {
 }
 
 const updatedUserId = (req, res) => {
-  updatedUsers(req, (err, data) => {
+  updatedUsers(req.body, req.params.id, (err, data) => {
     if(err) {
         return errorHandler(err,res)
     }

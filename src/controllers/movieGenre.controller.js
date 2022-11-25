@@ -34,7 +34,7 @@ const deleteMovieGenre = (req, res) => {
 
 const updateMovieGenre = (req, res) => {
 
-  modelUpdateMovieGenre(req, (err, data) => {
+  modelUpdateMovieGenre(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

@@ -34,7 +34,7 @@ const deleteSubscribers = (req, res) => {
 
 const updateSubscribers = (req, res) => {
 
-  modelUpdateSubscribers(req, (err, data) => {
+  modelUpdateSubscribers(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

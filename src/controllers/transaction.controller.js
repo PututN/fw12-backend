@@ -48,7 +48,7 @@ const deleteTransactionId = (req, res) => {
 
 const updateTransactionId = (req, res) => {
 
-  modelUpdateTransaction(req, (err, data) => {
+  modelUpdateTransaction(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

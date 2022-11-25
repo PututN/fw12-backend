@@ -10,9 +10,9 @@ const modelDeleteSubscribers = (data, cb) => {
   db.query(sql, value, cb)
 }
 
-const modelUpdateSubscribers = (data, cb) => {
-  const sql = 'UPDATE subscribers SET "email" = $1, "updateAt" = $3 WHERE id =$2 RETURNING *'
-  const value = [data.body.email, data.params.id, new Date()]
+const modelUpdateSubscribers = (data, id, cb) => {
+  const sql =  `UPDATE subscribers SET "email" = COALESCE(NULLIF($1,''), "email") WHERE id =$2 RETURNING *`
+  const value = [data.email, id]
   db.query(sql,value,cb)
 }
 

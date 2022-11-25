@@ -34,7 +34,7 @@ const deleteStatus = (req, res) => {
 
 const updateStatus = (req, res) => {
 
-  modelUpdateStatus(req, (err, data) => {
+  modelUpdateStatus(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

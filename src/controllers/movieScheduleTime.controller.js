@@ -34,7 +34,7 @@ const deletemovieScheduleTime = (req, res) => {
 
 const updatemovieScheduleTime = (req, res) => {
 
-  modelUpdateMovieScheduleTime(req, (err, data) => {
+  modelUpdateMovieScheduleTime(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }

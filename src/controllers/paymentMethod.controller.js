@@ -34,7 +34,7 @@ const deletePaymentMethod = (req, res) => {
 
 const updatePaymentMethod = (req, res) => {
 
-  modelUpdatePaymentMethod(req, (err, data) => {
+  modelUpdatePaymentMethod(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err,res)
     }
