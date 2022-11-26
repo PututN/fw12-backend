@@ -147,8 +147,11 @@ values ('Spider-Man: Homecoming', 'https://www.themoviedb.org/t/p/w300_and_h450_
 
 ALTER TABLE "users" ADD CONSTRAINT "email" UNIQUE ("email");
 
-ALTER TABLE "casts" ADD CONSTRAINT "name" UNIQUE ("name");
+ALTER TABLE "casts" ADD CONSTRAINT "unique_name" UNIQUE ("name");
 
+ALTER TABLE "genre" ADD CONSTRAINT "name" UNIQUE ("name");
+
+ALTER TABLE "subscribers" ADD CONSTRAINT "email" UNIQUE ("email");
 SELECT * FROM movies;
 
 ALTER TABLE genre
@@ -218,3 +221,17 @@ SELECT * FROM "paymentMethod";
 INSERT INTO "subscribers" ("email")
 VALUES ('pututnardiantol@gmail.com');
 SELECT * FROM "subscribers";
+
+ALTER TABLE "movieCasts" ADD CONSTRAINT "fk_movieId" FOREIGN KEY ("movieId") REFERENCES movies (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "movieCasts" ADD CONSTRAINT "fk_castsId" FOREIGN KEY ("castsId") REFERENCES casts (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+SELECT m.title, c.name as cast FROM "movies" m
+JOIN "movieCasts" mc ON mc."movieId" = m.id
+JOIN "casts" c ON c.id = mc."castsId";
+
+
+ALTER TABLE "movieGenre" ADD CONSTRAINT "fk_movieId" FOREIGN KEY ("movieId") REFERENCES movies (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "movieGenre" ADD CONSTRAINT "fk_genreId" FOREIGN KEY ("genreId") REFERENCES genre (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
