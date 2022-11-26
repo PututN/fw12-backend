@@ -5,6 +5,11 @@ const errorHandler =  (err, res) => {
       success: false,
       message: "Email already exists"
     })
+  } else if (err.message.includes('duplicate key value violates unique constraint "name"')) {
+    return res.status(400).json({
+      success: false,
+      message: "Name already exists"
+    })
   }
   return res.status(500).json({
     success: false,

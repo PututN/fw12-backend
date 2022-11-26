@@ -1,7 +1,14 @@
 const db = require('../helpers/db.helper')
 
-const modelGenres = (data, cb) => {
-  db.query('SELECT * FROM genre', cb)
+const modelGenres = (filter, cb) => {
+  const sql = `SELECT * FROM genre WHERE name LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+const selectCountAllGenre = (filter, cb) => {
+  const sql = `SELECT COUNT("name") AS "totalData" FROM "genre" WHERE name LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
 }
 
 const modelDeleteGenre = (data, cb) => {
@@ -23,4 +30,4 @@ const modelCreateGenre = (data, cb) => {
 
 }
 
-module.exports = {modelGenres, modelDeleteGenre, modelUpdateGenre, modelCreateGenre}
+module.exports = {modelGenres, modelDeleteGenre, modelUpdateGenre, modelCreateGenre, selectCountAllGenre}

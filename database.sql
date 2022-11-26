@@ -147,6 +147,8 @@ values ('Spider-Man: Homecoming', 'https://www.themoviedb.org/t/p/w300_and_h450_
 
 ALTER TABLE "users" ADD CONSTRAINT "email" UNIQUE ("email");
 
+ALTER TABLE "casts" ADD CONSTRAINT "name" UNIQUE ("name");
+
 SELECT * FROM movies;
 
 ALTER TABLE genre

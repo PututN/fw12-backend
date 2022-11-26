@@ -1,22 +1,26 @@
-const {readAllUsers, readUser, deletedUser, createUsers , updatedUsers} = require('../models/users.model')
+const {readAllUsers, readUser, deletedUser, createUsers , updatedUsers, selectCountAllUsers} = require('../models/users.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require ('../helpers/filter.helper')
 
 const readAll = (req, res) => {
-
-  readAllUsers(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
+  const sortable = ['firstName', 'lastName', 'phoneNumber', 'email', 'password','createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllUsers, res, (filter,pageInfo) => {
+    readAllUsers(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Users success loaded",
+        pageInfo,
+        results: data.rows
+  }
+  )
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data users success",
-      results: data.rows
-    }
-    )
+  )
   }
   )
 }
-
 
 const readUserId = (req, res) => {
 

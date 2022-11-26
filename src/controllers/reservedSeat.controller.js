@@ -1,18 +1,23 @@
-const {modelAllReservedNum, modelDeleteReservedNum, modelUpdateReservedNum, modelCreateReservedNum} = require('../models/reservedSeat.model')
+const {modelAllReservedNum, modelDeleteReservedNum, modelUpdateReservedNum, modelCreateReservedNum, selectCountAllReservedSeat} = require('../models/reservedSeat.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require('../helpers/filter.helper')
 
 const allReservedNum = (req, res) => {
-
-  modelAllReservedNum(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
+  const sortable = ['name', 'createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllReservedSeat, res, (filter,pageInfo) => {
+    modelAllReservedNum(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Seat reversed success loaded",
+        pageInfo,
+        results: data.rows
+  }
+  )
     }
-    return res.status(200).json({
-      success: true,
-      message: "Reserved Number success loaded",
-      results: data.rows
-    }
-    )
+  )
   }
   )
 }

@@ -1,20 +1,25 @@
-const {modelAllCinemas, modelCinemasId, modelDeleteCinemasId, modelUpdateCinemasId, modelCreateCinemas} = require('../models/cinemas.model')
+const {modelAllCinemas, modelCinemasId, modelDeleteCinemasId, modelUpdateCinemasId, modelCreateCinemas, selectCountAllCinemas} = require('../models/cinemas.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require('../helpers/filter.helper')
 
 const allCinemas = (req, res) => {
+  const sortable = ['name', 'address', 'city', 'createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllCinemas, res, (filter,pageInfo) => {
+    modelAllCinemas(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Cinemas success loaded",
+        pageInfo,
+        results: data.rows
 
-  modelAllCinemas(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Data Cinemas success",
-      results: data.rows
     }
     )
   }
   )
+})
 }
 
 const cinemasId = (req,res) => {
@@ -29,7 +34,6 @@ const cinemasId = (req,res) => {
       results: data.rows[0]
     })
   })
-
 }
 
 const deleteCinemasId = (req, res) => {

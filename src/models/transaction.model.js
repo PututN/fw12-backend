@@ -1,7 +1,14 @@
 const db = require('../helpers/db.helper')
 
-const modelAllTransaction = (data, cb) => {
-  db.query('SELECT * FROM transaction', cb)
+const modelAllTransaction = (filter, cb) => {
+  const sql = `SELECT * FROM transaction WHERE "fullName" LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+const selectCountAllTransaction = (filter, cb) => {
+  const sql = `SELECT COUNT("fullName") AS "totalData" FROM "transaction" WHERE "fullName" LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
 }
 
 const modelTransactionId = (data, cb) => {
@@ -29,4 +36,4 @@ const modelCreateTransaction = (data, cb) => {
 
 }
 
-module.exports = {modelAllTransaction, modelTransactionId, modelDeleteTransactionId, modelUpdateTransaction, modelCreateTransaction}
+module.exports = {modelAllTransaction, modelTransactionId, modelDeleteTransactionId, modelUpdateTransaction, modelCreateTransaction, selectCountAllTransaction}

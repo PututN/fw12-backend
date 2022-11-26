@@ -1,7 +1,14 @@
 const db = require('../helpers/db.helper')
 
-const modelAllReservedNum = (data, cb) => {
-  db.query('SELECT * FROM "reservedSeat"', cb)
+const modelAllReservedNum = (filter, cb) => {
+  const sql = `SELECT * FROM "reservedSeat" WHERE "seatNum" LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+const selectCountAllReservedSeat = (filter, cb) => {
+  const sql = `SELECT COUNT("seatNum") AS "totalData" FROM "reservedSeat" WHERE "seatNum" LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
 }
 
 const modelDeleteReservedNum = (data, cb) => {
@@ -23,4 +30,4 @@ const modelCreateReservedNum = (data, cb) => {
 
 }
 
-module.exports = {modelAllReservedNum, modelDeleteReservedNum, modelUpdateReservedNum, modelCreateReservedNum}
+module.exports = {modelAllReservedNum, modelDeleteReservedNum, modelUpdateReservedNum, modelCreateReservedNum, selectCountAllReservedSeat}

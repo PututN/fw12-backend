@@ -1,18 +1,23 @@
-const {modelGenres, modelDeleteGenre, modelUpdateGenre, modelCreateGenre} = require('../models/genres.model')
+const {modelGenres, modelDeleteGenre, modelUpdateGenre, modelCreateGenre, selectCountAllGenre} = require('../models/genres.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require('../helpers/filter.helper')
 
 const allGenre = (req, res) => {
-
-  modelGenres(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
+  const sortable = ['name', 'createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllGenre, res, (filter,pageInfo) => {
+    modelGenres(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Genres success loaded",
+        pageInfo,
+        results: data.rows
+  }
+  )
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data genres success loaded",
-      results: data.rows
-    }
-    )
+  )
   }
   )
 }

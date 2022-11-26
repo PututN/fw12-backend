@@ -1,8 +1,16 @@
 const db = require('../helpers/db.helper')
 
-const modelAllPaymentMethod = (data, cb) => {
-  db.query('SELECT * FROM "paymentMethod"', cb)
+const modelAllPaymentMethod = (filter, cb) => {
+  const sql = `SELECT * FROM "paymentMethod" WHERE name LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
 }
+const selectCountAllPaymentMethod = (filter, cb) => {
+  const sql = `SELECT COUNT("name") AS "totalData" FROM "paymentMethod" WHERE name LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+
 
 const modelDeletePaymentMethod = (data, cb) => {
   const sql = `DELETE FROM "paymentMethod" WHERE id=$1`
@@ -23,4 +31,4 @@ const modelCreatePaymentMethod = (data, cb) => {
 
 }
 
-module.exports = {modelAllPaymentMethod, modelDeletePaymentMethod, modelUpdatePaymentMethod, modelCreatePaymentMethod}
+module.exports = {modelAllPaymentMethod, modelDeletePaymentMethod, modelUpdatePaymentMethod, modelCreatePaymentMethod, selectCountAllPaymentMethod}

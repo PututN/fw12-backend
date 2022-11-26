@@ -1,7 +1,14 @@
 const db = require('../helpers/db.helper')
 
-const modelMovies = (data, cb) => {
-  db.query('SELECT * FROM movies', cb)
+const modelMovies = (filter, cb) => {
+  const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const values = [filter.limit, filter.offset, `%${filter.search}%`]
+  db.query(sql, values, cb)
+}
+const selectCountAllMovies = (filter, cb) => {
+  const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" WHERE title LIKE $1`;
+  const values = [`%${filter.search}%`]
+  db.query(sql, values, cb)
 }
 
 const modelmovieId = (data, cb) => {
@@ -29,4 +36,4 @@ const modelCreateMovie = (data, cb) => {
 
 }
 
-module.exports = {modelMovies, modelmovieId, modelDeleteMovie, modelUpdateMovie, modelCreateMovie}
+module.exports = {modelMovies, modelmovieId, modelDeleteMovie, modelUpdateMovie, modelCreateMovie, selectCountAllMovies}

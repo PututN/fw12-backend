@@ -1,18 +1,23 @@
-const {modelAllTransaction, modelTransactionId, modelDeleteTransactionId, modelUpdateTransaction, modelCreateTransaction} = require('../models/transaction.model')
+const {modelAllTransaction, modelTransactionId, modelDeleteTransactionId, modelUpdateTransaction, modelCreateTransaction, selectCountAllTransaction} = require('../models/transaction.model')
 const errorHandler = require('../helpers/errorHandler.helper')
+const filter = require('../helpers/filter.helper')
 
 const allTransaction = (req, res) => {
-
-  modelAllTransaction(req.body, (err, data) => {
-    if(err) {
-        return errorHandler(err,res)
+  const sortable = ['bookingDate', 'fullName', 'email', 'phoneNumber', 'createdAt', 'updateAt']
+  filter(req.query, sortable, selectCountAllTransaction, res, (filter,pageInfo) => {
+    modelAllTransaction(filter, (err, data) => {
+      if(err) {
+          return errorHandler(err,res)
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Data Transactions success loaded",
+        pageInfo,
+        results: data.rows
+  }
+  )
     }
-    return res.status(200).json({
-      success: true,
-      message: "Data Transactions success",
-      results: data.rows
-    }
-    )
+  )
   }
   )
 }
