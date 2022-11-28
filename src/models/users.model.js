@@ -18,6 +18,13 @@ const readUser = (data, cb) => {
   db.query(sql, value, cb)
 }
 
+const selectUserByEmail = (email, cb) => {
+  const sql = `SELECT * FROM users WHERE email=$1`
+  const value = [email]
+  db.query(sql, value, cb)
+}
+
+
 const deletedUser = (data, cb) => {
   const sql = `DELETE FROM users WHERE id=$1`
   const value = [data.id]
@@ -36,4 +43,4 @@ const updatedUsers = (data, id, cb) => {
   db.query(sql, value, cb)
 }
 
-module.exports = {readAllUsers, readUser, deletedUser, createUsers, updatedUsers, selectCountAllUsers}
+module.exports = {readAllUsers, readUser, deletedUser, createUsers, updatedUsers, selectCountAllUsers, selectUserByEmail}

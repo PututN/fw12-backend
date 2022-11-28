@@ -1,9 +1,10 @@
 const express = require('express')
-const postgree = require('./src/helpers/db.helper')
+const cors = require('cors')
 
 const app = express()
 app.use(express.json()) //untuk parsing json
 app.use(express.urlencoded({extended:true})) //untuk form encode
+app.use(cors()) // untuk membuka akses ke front end
 
 app.use('/', require('./src/routes'))
 

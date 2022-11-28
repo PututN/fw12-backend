@@ -3,6 +3,7 @@ const errorHandler = require('../helpers/errorHandler.helper')
 const filter = require('../helpers/filter.helper')
 
 const allMovies = (req, res) => {
+  console.log(req.userData)
   const sortable = ['title', 'releaseDate', 'director', 'duration', 'synopsis', 'createdAt', 'updateAt']
   filter(req.query, sortable, selectCountAllMovies, res, (filter,pageInfo) => {
     modelMovies(filter, (err, data) => {
