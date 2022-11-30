@@ -5,8 +5,8 @@ const modelAllResetPassword = (data, cb) => {
 }
 
 const modelDeleteResetPassword = (data, cb) => {
-  const sql = `DELETE FROM "resetPassword" WHERE id=$1`
-  const value = [data.id]
+  const sql = `DELETE FROM "resetPassword" WHERE "userId"=$1`
+  const value = [data]
   db.query(sql, value, cb)
 }
 
@@ -17,10 +17,16 @@ const modelUpdateResetPassword = (data, id, cb) => {
 }
 
 const modelCreatePassword = (data, cb) => {
-  const sql = 'INSERT INTO "resetPassword"("email", "userId") VALUES($1, $2) RETURNING *';
-  const value = [data.email, data.userId];
+  const sql = 'INSERT INTO "resetPassword"("email", "userId", "code") VALUES($1, $2, $3) RETURNING *';
+  const value = [data.email, data.userId, data.code];
   db.query(sql, value, cb)
 
 }
 
-module.exports = {modelAllResetPassword, modelDeleteResetPassword, modelUpdateResetPassword, modelCreatePassword}
+const selectUserByEmailAndCode = (data, cb) => {
+  const sql = `SELECT * FROM "resetPassword" WHERE email=$1 AND code=$2`
+  const value = [data.email, data.code]
+  db.query(sql, value, cb)
+}
+
+module.exports = {modelAllResetPassword, modelDeleteResetPassword, modelUpdateResetPassword, modelCreatePassword, selectUserByEmailAndCode}

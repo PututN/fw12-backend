@@ -24,7 +24,6 @@ const selectUserByEmail = (email, cb) => {
   db.query(sql, value, cb)
 }
 
-
 const deletedUser = (data, cb) => {
   const sql = `DELETE FROM users WHERE id=$1`
   const value = [data.id]
