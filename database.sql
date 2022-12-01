@@ -226,6 +226,9 @@ ALTER TABLE "movieCasts" ADD CONSTRAINT "fk_movieId" FOREIGN KEY ("movieId") REF
 
 ALTER TABLE "movieCasts" ADD CONSTRAINT "fk_castsId" FOREIGN KEY ("castsId") REFERENCES casts (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "transaction" ADD CONSTRAINT "fk_userId" FOREIGN KEY ("userId") REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "transaction" ADD CONSTRAINT "fk_paymentId" FOREIGN KEY ("paymentId") REFERENCES "paymentMethod" (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
 SELECT m.title, c.name as cast FROM "movies" m
 JOIN "movieCasts" mc ON mc."movieId" = m.id
 JOIN "casts" c ON c.id = mc."castsId";
@@ -239,3 +242,7 @@ ALTER TABLE "users" ALTER COLUMN "password" SET NOT NULL;
 ALTER TABLE "users" ALTER COLUMN "email" SET NOT NULL;
 
 ALTER TABLE "resetPassword" ADD COLUMN "code" VARCHAR;
+
+ALTER TABLE "transaction"
+ADD COLUMN "userId" INTEGER,
+ADD COLUMN "paymentId" INTEGER;

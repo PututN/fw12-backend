@@ -6,6 +6,7 @@ const modelMovies = (filter, cb) => {
   db.query(sql, values, cb);
 };
 const selectCountAllMovies = (filter, cb) => {
+  console.log(filter.search)
   const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" WHERE title LIKE $1`;
   const values = [`%${filter.search}%`];
   db.query(sql, values, cb);
@@ -51,7 +52,30 @@ const modelCreateMovie = (data, cb) => {
   db.query(sql, value, cb);
 };
 
-const modelUpComingMovies = (cb) => {
+const modelUpComingMovies = (filter, cb) => {
+  console.log(filter)
+  const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", string_agg(g.name,', ') AS genre FROM movies m
+  JOIN "movieGenre" mg ON mg."movieId" = m.id
+  JOIN genre g ON g.id = mg."genreId"
+  WHERE to_char("releaseDate", 'Month') LIKE $1 AND to_char("releaseDate", 'YYYY') LIKE $2
+  GROUP BY m.id;`
+  const value = [`%${filter.month}%`, `%${filter.year}%`]
+  db.query(sql, value, cb);
+};
+
+const selectCountComingMovies = (filter, cb) => {
+  const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" m
+  JOIN "movieGenre" mg ON mg."movieId" = m.id
+  JOIN genre g ON g.id = mg."genreId"
+  WHERE to_char("releaseDate", 'Month') = $1
+  AND
+  to_char("releaseDate", 'YYYY') =$2`;
+  const values = [filter.month, filter.year];
+  db.query(sql, values, cb);
+};
+
+
+const modelNowShowing = (cb) => {
   const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, ms."startDate", ms."endDate" FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN genre g ON g.id = mg."genreId"
@@ -61,17 +85,8 @@ const modelUpComingMovies = (cb) => {
   db.query(sql, cb);
 };
 
-const modelNowShowing = (month, year, cb) => {
-  const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", string_agg(g.name,', ') AS genre FROM movies m
-  JOIN "movieGenre" mg ON mg."movieId" = m.id
-  JOIN genre g ON g.id = mg."genreId"
-  WHERE to_char("releaseDate", 'Month') LIKE $1 AND to_char("releaseDate", 'YYYY') LIKE $2
-  GROUP BY m.id;`
-  const value = [`%${month}%`, `%${year}%`]
-  db.query(sql, value, cb);
-};
-
 module.exports = {
+  selectCountComingMovies,
   modelMovies,
   modelmovieId,
   modelDeleteMovie,

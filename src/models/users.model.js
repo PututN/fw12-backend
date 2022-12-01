@@ -18,9 +18,21 @@ const readUser = (data, cb) => {
   db.query(sql, value, cb)
 }
 
+const getProfile = (id, cb) => {
+  const sql = `SELECT * FROM users WHERE id=$1`
+  const value = [id]
+  db.query(sql, value, cb)
+}
+
 const selectUserByEmail = (email, cb) => {
   const sql = `SELECT * FROM users WHERE email=$1`
   const value = [email]
+  db.query(sql, value, cb)
+}
+
+const updateProfile = (data, id, cb) => {
+  const sql = `UPDATE users SET "firstName" = COALESCE(NULLIF($1, ''), "firstName"), "lastName" = COALESCE(NULLIF($2, ''), "lastName"), "phoneNumber" = COALESCE(NULLIF($3, ''), "phoneNumber"), "email" = COALESCE(NULLIF($4, ''), "email"), "password" = COALESCE(NULLIF($5, ''), "password"), "picture" = COALESCE(NULLIF($6, ''), "picture") WHERE id= $7 RETURNING *`;
+  const value = [data.firstName, data.lastName, data.phoneNumber, data.email, data.password, data.picture, id];
   db.query(sql, value, cb)
 }
 
@@ -42,4 +54,4 @@ const updatedUsers = (data, id, cb) => {
   db.query(sql, value, cb)
 }
 
-module.exports = {readAllUsers, readUser, deletedUser, createUsers, updatedUsers, selectCountAllUsers, selectUserByEmail}
+module.exports = {readAllUsers, readUser, deletedUser, createUsers, updatedUsers, selectCountAllUsers, selectUserByEmail, getProfile,updateProfile}

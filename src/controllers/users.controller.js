@@ -5,9 +5,11 @@ const {
   createUsers,
   updatedUsers,
   selectCountAllUsers,
+  selectUserByEmail,
 } = require("../models/users.model");
 const errorHandler = require("../helpers/errorHandler.helper");
 const filter = require("../helpers/filter.helper");
+const fs = require("fs");
 
 const readAll = (req, res) => {
   const sortable = [
@@ -68,6 +70,23 @@ const deletedUserId = (req, res) => {
 };
 
 const updatedUserId = (req, res) => {
+  console.log(req.file)
+  if (req.file) {
+    req.body.picture = req.file.filename;
+    readUser(req.params, (err, data) => {
+      if (err) {
+        return errorHandler(err, res);
+      }
+      const [user] = data.rows;
+      if (data.rows.length) {
+        fs.rm("./uploads/" + user.picture, (err) => {
+          if (err) {
+            return errorHandler(err, res);
+          }
+        });
+      }
+    });
+  }
   updatedUsers(req.body, req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err, res);
@@ -81,9 +100,8 @@ const updatedUserId = (req, res) => {
 };
 
 const createAllUsers = (req, res) => {
-
   createUsers(req.body, (err, data) => {
-    if(req.body.email === "") {
+    if (req.body.email === "") {
       return res.status(406).json({
         success: true,
         message: "Email required",

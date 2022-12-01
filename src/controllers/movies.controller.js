@@ -6,7 +6,8 @@ const {
   modelCreateMovie,
   selectCountAllMovies,
   modelUpComingMovies,
-  modelNowShowing
+  modelNowShowing,
+  selectCountComingMovies
 } = require("../models/movies.model");
 const errorHandler = require("../helpers/errorHandler.helper");
 const filter = require("../helpers/filter.helper");
@@ -90,22 +91,31 @@ const createMovies = (req, res) => {
 };
 
 const upComingMovies = (req, res) => {
-  modelUpComingMovies((err, data) => {
-    if (err) {
-      errorHandler(err);
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Up Coming Movies success loaded",
-      results: data.rows,
+  const sortable = [
+    "title",
+    "createdAt",
+    "updateAt",
+  ];
+  filter(req.query, sortable, selectCountComingMovies, res, (filter, pageInfo) => {
+    console.log(pageInfo)
+    modelUpComingMovies(filter, (err, data) => {
+      if (err) {
+        errorHandler(err);
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Up Coming Movies success loaded",
+        pageInfo,
+        results: data.rows,
+      });
     });
-  });
-};
+  })
+}
+
 
 const nowShowing = (req, res) => {
   const month = req.query.month || new Date().toLocaleString('default', {month : 'long'})
   const year = req.query.year || new Date().getFullYear()
-  console.log(month, year)
   modelNowShowing(month, year, (err, data) => {
     if (err) {
       errorHandler(err);

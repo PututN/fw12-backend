@@ -39,13 +39,32 @@ const login = (req, res) => {
 };
 
 const register = (req, res) => {
+  if(req.body.email ==="" && req.body.password ==="") {
+    return res.status(201).json({
+      success: false,
+      message: "Please fill email and password"
+    })
+  }
+  if(req.body.email === "") {
+    return res.status(201).json({
+      success: false,
+      message: "Please fill email"
+    })
+  }
+  if(req.body.password === "") {
+    return res.status(201).json({
+      success: false,
+      message: "Please fill password"
+    })
+  }
+
   createUsers(req.body, (err, data) => {
     if (err) {
       return errorHandler(err, res);
     }
     const { rows: users } = data;
     const [user] = users;
-    const token = jwt.sign({ id: user }, "backend-secret");
+    const token = jwt.sign(user.id, "backend-secret"); // usernya
     return res.status(201).json({
       success: true,
       message: "Register success",
