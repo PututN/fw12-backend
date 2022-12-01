@@ -54,34 +54,56 @@ const modelCreateMovie = (data, cb) => {
 
 const modelUpComingMovies = (filter, cb) => {
   console.log(filter)
-  const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", string_agg(g.name,', ') AS genre FROM movies m
+  const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", m."createdAt", string_agg(g.name,', ') AS genre FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN genre g ON g.id = mg."genreId"
-  WHERE to_char("releaseDate", 'Month') LIKE $1 AND to_char("releaseDate", 'YYYY') LIKE $2
-  GROUP BY m.id;`
-  const value = [`%${filter.month}%`, `%${filter.year}%`]
+  WHERE m.title LIKE $1 AND
+  date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('year', CURRENT_DATE)::TEXT) AND
+  date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($3,''), date_part('month', CURRENT_DATE)::TEXT)
+  GROUP BY m.id, m.title, m.picture, m."releaseDate", m."createdAt"
+  ORDER BY "${filter.sortBy}" ${filter.sort}
+  LIMIT $4 OFFSET $5`;
+  const value = [`%${filter.search}%`,
+  filter.year,
+  filter.month,
+  filter.limit,
+  filter.offset
+]
   db.query(sql, value, cb);
 };
 
 const selectCountComingMovies = (filter, cb) => {
-  const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" m
-  JOIN "movieGenre" mg ON mg."movieId" = m.id
-  JOIN genre g ON g.id = mg."genreId"
-  WHERE to_char("releaseDate", 'Month') = $1
-  AND
-  to_char("releaseDate", 'YYYY') =$2`;
-  const values = [filter.month, filter.year];
+  const sql = `SELECT COUNT("title") AS "totalData" FROM "movies"
+  WHERE
+  title LIKE $1 AND
+  date_part('year', "releaseDate")::TEXT = COALESCE(NULLIF($2,''), date_part('year', CURRENT_DATE)::TEXT) AND
+  date_part('month', "releaseDate")::TEXT = COALESCE(NULLIF($3,''), date_part('month', CURRENT_DATE)::TEXT)`;
+  const values = [`%${filter.search}%`, filter.year, filter.month];
   db.query(sql, values, cb);
 };
 
 
-const modelNowShowing = (cb) => {
-  const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, ms."startDate", ms."endDate" FROM movies m
+const modelNowShowing = (filter, cb) => {
+  const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, ms."startDate", ms."endDate", m."createdAt" FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN genre g ON g.id = mg."genreId"
   JOIN "movieSchedules" ms ON ms."movieId" = m.id
   WHERE NOW() BETWEEN ms."startDate" AND ms."endDate"
-  GROUP BY m.title, m.picture, ms."startDate", ms."endDate", m.id`;
+  GROUP BY m.title, m.picture, ms."startDate", ms."endDate", m.id, m."createdAt"
+  ORDER BY "${filter.sortBy}" ${filter.sort}
+  LIMIT $1 OFFSET $2`;
+  const value = [
+  filter.limit,
+  filter.offset
+];
+  db.query(sql, value, cb);
+};
+
+const selectCountNowShowing = (filter, cb) => {
+  const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" m
+  JOIN "movieSchedules" ms ON ms."movieId" = m.id
+  WHERE
+  CURRENT_DATE BETWEEN ms."startDate" AND ms."endDate"`;
   db.query(sql, cb);
 };
 
@@ -95,4 +117,5 @@ module.exports = {
   selectCountAllMovies,
   modelUpComingMovies,
   modelNowShowing,
+  selectCountNowShowing
 };

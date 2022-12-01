@@ -6,8 +6,8 @@ const filter = (data, sortable, countModel, res, cb) => {
   data.search = data.search || ''
   data.sortBy = (sortable.includes(data.sortBy) && data.sortBy) || 'createdAt'
   data.sort = data.sort || 'ASC'
-  data.month = data.month || new Date().toLocaleString("default", {month: "long"})
-  data.year = data.year || new Date().getFullYear();
+  data.month = data.month || ""
+  data.year = data.year || "";
 
   const params = {
     limit: data.limit,

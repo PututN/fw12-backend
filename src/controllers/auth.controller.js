@@ -18,7 +18,7 @@ const login = (req, res) => {
       if (req.body.password === user.password) {
         const token = jwt.sign(
           { id: user.id },
-          "backend-secret"
+          process.env.SECRET_KEY
           // ,{
           //   expiresIn : "60000ms"
           // }
@@ -64,7 +64,7 @@ const register = (req, res) => {
     }
     const { rows: users } = data;
     const [user] = users;
-    const token = jwt.sign(user.id, "backend-secret"); // usernya
+    const token = jwt.sign(user.id, process.env.SECRET_KEY); // usernya
     return res.status(201).json({
       success: true,
       message: "Register success",
