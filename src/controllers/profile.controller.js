@@ -10,7 +10,6 @@ const idUser = (req, res) => {
   const validated = jwt.verify(token, process.env.SECRET_KEY);
   const { id } = validated;
   getProfile(id, (err, data) => {
-    console.log(data);
     if (err) {
       return errorHandler(err, res);
     }

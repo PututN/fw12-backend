@@ -102,9 +102,10 @@ const modelNowShowing = (filter, cb) => {
 const selectCountNowShowing = (filter, cb) => {
   const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" m
   JOIN "movieSchedules" ms ON ms."movieId" = m.id
-  WHERE
+  WHERE title LIKE $1 AND
   CURRENT_DATE BETWEEN ms."startDate" AND ms."endDate"`;
-  db.query(sql, cb);
+  const value = [`%${filter.search}%`]
+  db.query(sql, value, cb);
 };
 
 module.exports = {

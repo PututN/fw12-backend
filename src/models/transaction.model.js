@@ -40,22 +40,20 @@ const modelCreateOrder = async (data, cb) => {
   try {
     await db.query("BEGIN");
     const insertTransaction =
-    `INSERT INTO "transaction" ("userId", "fullName", "email", "phoneNumber", "movieId", "cinemaId", "bookingDate", "movieScheduleId", "statusId", "paymentId") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING "bookingDate", "fullName", "email", "phoneNumber"`;
+    `INSERT INTO "transaction" ("fullName", "email", "phoneNumber", "movieId", "cinemaId", "bookingDate", "movieScheduleId", "statusId", "paymentId") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING "userId", "bookingDate", "fullName", "email", "phoneNumber"`;
     const sql = await db.query(insertTransaction, [data.userId, data.fullName, data.email, data.phoneNumber, data.movieId, data.cinemaId, data.bookingDate, data.movieScheduleId, data.statusId, data.paymentId])
-    console.log(sql)
     const insertSeatNum = `INSERT INTO "reversedSeat" ("seatNum", "transactionId") VALUES ($1, $2) RETURNING "seatNum"`
     const insertSeatNumValues = [data.seatNum, sql.rows[0].id]
     const sqlseat = await db.query(insertSeatNum, insertSeatNumValues);
-    console.log(sqlseat)
     await db.query("COMMIT");
     const dataOrder = {
       transaction: sql.rows[0],
       seatNum : sqlseat.rows
     }
-    cb(null, dataOrder); // data order disini mengembalikan result dalam bentuk object
+    cb(null, dataOrder); // data order disini mengembalikan result dalam bentuk object (controller) (err,result)
   } catch(e) {
     await db.query("ROLLBACK");
-    cb(e, null)
+    cb(e, null) //cb (err,result) >> kondisinya error
   }
 
 }

@@ -1,5 +1,12 @@
 const errorHandler =  (err, res) => {
   console.log(err)
+  if(err.message.includes('user not found')) {
+    return res.status(400).json({
+      success: false,
+      message: "User not found.",
+    });
+
+  }
   if(err.message.includes('Only png,jpg and jpeg format allowed')){
     return res.status(400).json({
       success: false,

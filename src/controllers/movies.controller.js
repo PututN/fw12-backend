@@ -121,7 +121,6 @@ const nowShowing = (req, res) => {
   ];
 
   filter(req.query, sortable, selectCountNowShowing, res, (filter, pageInfo) => {
-    console.log(pageInfo)
     modelNowShowing(filter, (err, data) => {
       if (err) {
         return errorHandler(err, res);

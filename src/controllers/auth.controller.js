@@ -10,19 +10,14 @@ const {
 } = require("../models/resetPassword.model");
 const jwt = require("jsonwebtoken");
 const errorHandler = require("../helpers/errorHandler.helper");
+const { validationResult } = require("express-validator");
 
 const login = (req, res) => {
   selectUserByEmail(req.body.email, (err, { rows }) => {
     if (rows.length) {
       const [user] = rows;
       if (req.body.password === user.password) {
-        const token = jwt.sign(
-          { id: user.id },
-          process.env.SECRET_KEY
-          // ,{
-          //   expiresIn : "60000ms"
-          // }
-        );
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
         return res.status(200).json({
           success: true,
           message: "login success",
@@ -39,23 +34,28 @@ const login = (req, res) => {
 };
 
 const register = (req, res) => {
-  if(req.body.email ==="" && req.body.password ==="") {
-    return res.status(201).json({
-      success: false,
-      message: "Please fill email and password"
-    })
-  }
-  if(req.body.email === "") {
-    return res.status(201).json({
-      success: false,
-      message: "Please fill email"
-    })
-  }
-  if(req.body.password === "") {
-    return res.status(201).json({
-      success: false,
-      message: "Please fill password"
-    })
+  // if(req.body.email ==="" && req.body.password ==="") {
+  //   return res.status(201).json({
+  //     success: false,
+  //     message: "Please fill email and password"
+  //   })
+  // }
+  // if(req.body.email === "") {
+  //   return res.status(201).json({
+  //     success: false,
+  //     message: "Please fill email"
+  //   })
+  // }
+  // if(req.body.password === "") {
+  //   return res.status(201).json({
+  //     success: false,
+  //     message: "Please fill password"
+  //   })
+  // }
+  //validate menggunakan express-validator
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(400).json({ error: error.array() });
   }
 
   createUsers(req.body, (err, data) => {
@@ -100,17 +100,14 @@ const forgotPassword = (req, res) => {
         }
       });
     } else {
-      return res.status(400).json({
-        success: false,
-        message: "User not found.",
-      });
+      throw Error("user not found")
     }
   });
 };
 
 const resetPassword = (req, res) => {
   const { password, confirmPassword } = req.body; //destruc dari req.body
-  if(password === confirmPassword) {
+  if (password === confirmPassword) {
     selectUserByEmailAndCode(req.body, (err, { rows: users }) => {
       if (err) {
         return errorHandler(err, res);
@@ -125,8 +122,9 @@ const resetPassword = (req, res) => {
             if (err) {
               return errorHandler(err, res);
             }
-            if (users.length) { //users disini dari distraction line 105
-              modelDeleteResetPassword( resetRequest.userId, (err, { rows }) => {
+            if (users.length) {
+              //users disini dari distraction line 105
+              modelDeleteResetPassword(resetRequest.userId, (err, { rows }) => {
                 console.log(rows);
                 if (!rows.length) {
                   return res.status(200).json({
@@ -143,8 +141,8 @@ const resetPassword = (req, res) => {
   } else {
     return res.status(400).json({
       success: false,
-      message: "password and confirm password must be match"
-    })
+      message: "password and confirm password must be match",
+    });
   }
 };
 module.exports = { login, register, forgotPassword, resetPassword };
