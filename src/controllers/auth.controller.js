@@ -17,7 +17,7 @@ const login = (req, res) => {
     if (rows.length) {
       const [user] = rows;
       if (req.body.password === user.password) {
-        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+        const token = jwt.sign({ id: user.id }, "backend-secret");
         return res.status(200).json({
           success: true,
           message: "login success",
@@ -64,7 +64,7 @@ const register = (req, res) => {
     }
     const { rows: users } = data;
     const [user] = users;
-    const token = jwt.sign(user.id, process.env.SECRET_KEY); // usernya
+    const token = jwt.sign(user.id, "backend-secret"); // usernya
     return res.status(201).json({
       success: true,
       message: "Register success",

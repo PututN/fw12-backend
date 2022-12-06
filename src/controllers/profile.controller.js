@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const idUser = (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const validated = jwt.verify(token, process.env.SECRET_KEY);
+  const validated = jwt.verify(token, "backend-secret");
   const { id } = validated;
   getProfile(id, (err, data) => {
     if (err) {
@@ -24,7 +24,7 @@ const idUser = (req, res) => {
 const updateUser = (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const validated = jwt.verify(token, process.env.SECRET_KEY);
+  const validated = jwt.verify(token, "backend-secret");
   const { id } = validated;
   if (req.file) {
     req.body.picture = req.file.filename;
