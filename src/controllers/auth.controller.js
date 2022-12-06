@@ -100,8 +100,11 @@ const forgotPassword = (req, res) => {
         }
       });
     } else {
-      throw Error("user not found")
-    }
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+      }
   });
 };
 
