@@ -40,7 +40,7 @@ const modelCreateOrder = async (data, cb) => {
   try {
     await db.query("BEGIN");
     const insertTransaction =
-    `INSERT INTO "transaction" ("fullName", "email", "phoneNumber", "movieId", "cinemaId", "bookingDate", "movieScheduleId", "statusId", "paymentId") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING "userId", "bookingDate", "fullName", "email", "phoneNumber"`;
+    `INSERT INTO "transaction" ("userId", "fullName", "email", "phoneNumber", "movieId", "cinemaId", "bookingDate", "movieScheduleId", "statusId", "paymentId") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING "userId", "bookingDate", "fullName", "email", "phoneNumber"`;
     const sql = await db.query(insertTransaction, [data.userId, data.fullName, data.email, data.phoneNumber, data.movieId, data.cinemaId, data.bookingDate, data.movieScheduleId, data.statusId, data.paymentId])
     const insertSeatNum = `INSERT INTO "reversedSeat" ("seatNum", "transactionId") VALUES ($1, $2) RETURNING "seatNum"`
     const insertSeatNumValues = [data.seatNum, sql.rows[0].id]

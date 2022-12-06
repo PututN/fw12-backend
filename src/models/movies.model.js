@@ -53,7 +53,6 @@ const modelCreateMovie = (data, cb) => {
 };
 
 const modelUpComingMovies = (filter, cb) => {
-  console.log(filter)
   const sql = `SELECT m.id, m.picture, m.title, m."releaseDate", m."createdAt", string_agg(g.name,', ') AS genre FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
   JOIN genre g ON g.id = mg."genreId"
