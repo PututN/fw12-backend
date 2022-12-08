@@ -1,12 +1,18 @@
 const db = require("../helpers/db.helper");
 
 const modelMovies = (filter, cb) => {
-  const sql = `SELECT * FROM movies WHERE title LIKE $3 ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
+  const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, m."createdAt" FROM movies m
+  JOIN "movieGenre" mg ON mg."movieId" = m.id
+  LEFT JOIN genre g ON g.id = mg."genreId"
+  WHERE title LIKE $3
+  GROUP BY m.id
+  ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
   const values = [filter.limit, filter.offset, `%${filter.search}%`];
   db.query(sql, values, cb);
 };
+
 const selectCountAllMovies = (filter, cb) => {
-  console.log(filter.search)
+  console.log(filter.search);
   const sql = `SELECT COUNT("title") AS "totalData" FROM "movies" WHERE title LIKE $1`;
   const values = [`%${filter.search}%`];
   db.query(sql, values, cb);
@@ -62,12 +68,13 @@ const modelUpComingMovies = (filter, cb) => {
   GROUP BY m.id, m.title, m.picture, m."releaseDate", m."createdAt"
   ORDER BY "${filter.sortBy}" ${filter.sort}
   LIMIT $4 OFFSET $5`;
-  const value = [`%${filter.search}%`,
-  filter.year,
-  filter.month,
-  filter.limit,
-  filter.offset
-]
+  const value = [
+    `%${filter.search}%`,
+    filter.year,
+    filter.month,
+    filter.limit,
+    filter.offset,
+  ];
   db.query(sql, value, cb);
 };
 
@@ -81,7 +88,6 @@ const selectCountComingMovies = (filter, cb) => {
   db.query(sql, values, cb);
 };
 
-
 const modelNowShowing = (filter, cb) => {
   const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, ms."startDate", ms."endDate", m."createdAt" FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
@@ -91,10 +97,7 @@ const modelNowShowing = (filter, cb) => {
   GROUP BY m.title, m.picture, ms."startDate", ms."endDate", m.id, m."createdAt"
   ORDER BY "${filter.sortBy}" ${filter.sort}
   LIMIT $1 OFFSET $2`;
-  const value = [
-  filter.limit,
-  filter.offset
-];
+  const value = [filter.limit, filter.offset];
   db.query(sql, value, cb);
 };
 
@@ -103,7 +106,7 @@ const selectCountNowShowing = (filter, cb) => {
   JOIN "movieSchedules" ms ON ms."movieId" = m.id
   WHERE title LIKE $1 AND
   CURRENT_DATE BETWEEN ms."startDate" AND ms."endDate"`;
-  const value = [`%${filter.search}%`]
+  const value = [`%${filter.search}%`];
   db.query(sql, value, cb);
 };
 
@@ -117,5 +120,5 @@ module.exports = {
   selectCountAllMovies,
   modelUpComingMovies,
   modelNowShowing,
-  selectCountNowShowing
+  selectCountNowShowing,
 };
