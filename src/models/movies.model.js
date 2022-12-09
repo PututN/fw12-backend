@@ -1,11 +1,11 @@
 const db = require("../helpers/db.helper");
 
 const modelMovies = (filter, cb) => {
-  const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, m."createdAt" FROM movies m
+  const sql = `SELECT m.id, m.picture, m.title, string_agg(g.name,', ') AS genre, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis FROM movies m
   JOIN "movieGenre" mg ON mg."movieId" = m.id
   LEFT JOIN genre g ON g.id = mg."genreId"
-  WHERE title LIKE $3
-  GROUP BY m.id
+  WHERE m.title LIKE $3
+  GROUP BY m.id, m.picture, m.title, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis
   ORDER BY "${filter.sortBy}" ${filter.sort} LIMIT $1 OFFSET $2`;
   const values = [filter.limit, filter.offset, `%${filter.search}%`];
   db.query(sql, values, cb);
@@ -18,9 +18,17 @@ const selectCountAllMovies = (filter, cb) => {
   db.query(sql, values, cb);
 };
 
-const modelmovieId = (data, cb) => {
-  const sql = `SELECT * FROM movies WHERE id=$1`;
-  const value = [data.id];
+const modelmovieId = (id, cb) => {
+  const sql = `SELECT m."id", m.picture, m.title, string_agg(g.name,', ') AS genre, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis, string_agg(c.name,', ') AS casts FROM movies m
+  JOIN "movieGenre" mg ON mg."movieId" = m."id"
+  LEFT JOIN genre g ON g."id" = mg."genreId"
+  JOIN "movieCasts" mc ON mc."movieId" = m.id
+  LEFT JOIN "casts" c ON c.id = mc."castsId"
+  WHERE m."id"=$1
+  GROUP BY m."id", m.picture, m.title, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis, g.id, c.id
+`;
+
+  const value = [id];
   db.query(sql, value, cb);
 };
 

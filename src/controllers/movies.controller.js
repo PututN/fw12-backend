@@ -40,7 +40,7 @@ const allMovies = (req, res) => {
 };
 
 const movieId = (req, res) => {
-  modelmovieId(req.params, (err, data) => {
+  modelmovieId(req.params.id, (err, data) => {
     if (err) {
       return errorHandler(err, res);
     }

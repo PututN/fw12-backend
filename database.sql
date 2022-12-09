@@ -20,50 +20,7 @@ CREATE TABLE "resetPassword" (
     "updateAt"  TIMESTAMPTZ
 );
 
-CREATE TABLE "movies" (
-    "id"            INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    "title"         VARCHAR(255),
-    "picture"       VARCHAR(255),
-    "releaseDate"   TIMESTAMPTZ,
-    "director"      VARCHAR(255),
-    "duration"      TIME,
-    "synopsis"      TEXT,
-    "createdAt"     TIMESTAMPTZ DEFAULT now(),
-    "updateAt"      TIMESTAMPTZ
-);
 
-CREATE TABLE "genre" (
-    "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    "name"   INT,
-    "createdAt" TIMESTAMPTZ DEFAULT now(),
-    "updateAt" TIMESTAMPTZ
-);
-
-CREATE TABLE "movieGenre" (
-    "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    "movieId"   INT,
-    "genreId"   INT,
-    "createdAt" TIMESTAMPTZ DEFAULT now(),
-    "updateAt" TIMESTAMPTZ
-);
-
-
-CREATE TABLE "casts" (
-    "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    "name"      VARCHAR(255),
-    "createdAt" TIMESTAMPTZ DEFAULT now(),
-    "updateAt" TIMESTAMPTZ
-);
-
-
-
-CREATE TABLE "movieCasts" (
-    "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    "movieId"   INT,
-    "castsId"   INT,
-    "createdAt" TIMESTAMPTZ DEFAULT now(),
-    "updateAt" TIMESTAMPTZ
-);
 
 
 CREATE TABLE "cinemas" (
@@ -88,7 +45,6 @@ CREATE TABLE "movieSchedules" (
     "updateAt" TIMESTAMPTZ
 );
 
-
 CREATE TABLE "movieScheduleTimes" (
     "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     "time"      TIME,
@@ -96,7 +52,6 @@ CREATE TABLE "movieScheduleTimes" (
     "createdAt" TIMESTAMPTZ DEFAULT now(),
     "updateAt" TIMESTAMPTZ
 );
-
 
 CREATE TABLE "status" (
     "id"        INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -115,6 +70,8 @@ CREATE TABLE "transaction" (
     "email"      VARCHAR(255),
     "phoneNumber"      VARCHAR(255),
     "statusId"   INT,
+    "userId"    INT,
+    "paymentID" INT,
     "createdAt" TIMESTAMPTZ DEFAULT now(),
     "updateAt" TIMESTAMPTZ
 );
