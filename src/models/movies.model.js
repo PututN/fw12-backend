@@ -19,13 +19,13 @@ const selectCountAllMovies = (filter, cb) => {
 };
 
 const modelmovieId = (id, cb) => {
-  const sql = `SELECT m."id", m.picture, m.title, string_agg(g.name,', ') AS genre, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis, string_agg(c.name,', ') AS casts FROM movies m
-  JOIN "movieGenre" mg ON mg."movieId" = m."id"
-  LEFT JOIN genre g ON g."id" = mg."genreId"
-  JOIN "movieCasts" mc ON mc."movieId" = m.id
-  LEFT JOIN "casts" c ON c.id = mc."castsId"
+  const sql = `SELECT m."id", m.picture, m.title, string_agg(DISTINCT g.name,', ') AS genre, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis, string_agg(DISTINCT c.name,', ') AS casts FROM movies m
+  JOIN "movieGenre" mg ON m."id" = mg."movieId"
+  LEFT JOIN genre g ON mg."genreId" = g."id"
+  JOIN "movieCasts" mc ON m.id = mc."movieId"
+  LEFT JOIN "casts" c ON mc."castsId" = c.id
   WHERE m."id"=$1
-  GROUP BY m."id", m.picture, m.title, m."createdAt", m."releaseDate", m.duration, m.director, m.synopsis, g.id, c.id
+  GROUP BY m.title,  m.id
 `;
 
   const value = [id];
