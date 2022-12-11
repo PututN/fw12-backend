@@ -1,7 +1,7 @@
 const { Pool } = require("pg"); //pool ini digunakan untuk mengkoneksi dengan database postgree
 
 const db = new Pool({
-  connectionString : "postgres://postgres:1@localhost:5432/cinemnar"  //connectionstring untuk mengakses database
+  connectionString : "postgresql://postgres:wHnovejTB1OrDAYg@db.vdvuzjwzxhxcslxaeabs.supabase.co:5432/postgres"  //connectionstring untuk mengakses database
 })
 
 db.connect((err) =>{
