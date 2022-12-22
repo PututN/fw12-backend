@@ -10,7 +10,7 @@ const {
 } = require("../models/resetPassword.model");
 const jwt = require("jsonwebtoken");
 const errorHandler = require("../helpers/errorHandler.helper");
-const { validationResult } = require("express-validator");
+const argon = require("argon2");
 
 const login = (req, res) => {
   selectUserByEmail(req.body.email, (err, { rows }) => {
@@ -29,50 +29,32 @@ const login = (req, res) => {
           message: "Wrong password or email",
         });
       }
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Email not registered",
+      });
     }
   });
 };
 
-const register = (req, res) => {
-  // if(req.body.email ==="" && req.body.password ==="") {
-  //   return res.status(201).json({
-  //     success: false,
-  //     message: "Please fill email and password"
-  //   })
-  // }
-  // if(req.body.email === "") {
-  //   return res.status(201).json({
-  //     success: false,
-  //     message: "Please fill email"
-  //   })
-  // }
-  // if(req.body.password === "") {
-  //   return res.status(201).json({
-  //     success: false,
-  //     message: "Please fill password"
-  //   })
-  // }
-  //validate menggunakan express-validator
-  const error = validationResult(req);
-  if (!error.isEmpty()) {
-    return res.status(400).json({ error: error.array() });
-  }
-
-  createUsers(req.body, (err, data) => {
-    if (err) {
-      return errorHandler(err, res);
-    }
-    const { rows: users } = data;
-    const [user] = users;
-    const token = jwt.sign(user.id, "backend-secret"); // usernya
-    return res.status(201).json({
+const register = async (req, res) => {
+  try {
+    req.body.password = await argon.hash(req.body.password);
+    const user = await createUsers(req.body);
+    console.log(user)
+    const token = jwt.sign({ user }, "backend-secret");
+    return res.status(200).json({
       success: true,
-      message: "Register success",
-      data: {
+      message: "Register Success",
+      results: {
         token,
       },
     });
-  });
+  } catch (error) {
+    console.log(error)
+    if (error) return errorHandler(error, res);
+  }
 };
 
 const forgotPassword = (req, res) => {
@@ -104,7 +86,7 @@ const forgotPassword = (req, res) => {
         success: false,
         message: "User not found",
       });
-      }
+    }
   });
 };
 
