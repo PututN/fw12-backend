@@ -13,11 +13,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const limit =   1024 * 1024;
+const limit = 1024 * 1024;
 
-const upload = multer ({
+const upload = multer({
   storage: storage,
-  fileFilter : (req, file, cb) => {
+  fileFilter: (req, file, cb) => {
     if (
       file.mimetype === "image/jpeg" ||
       file.mimetype === "image/png" ||
@@ -25,22 +25,19 @@ const upload = multer ({
     ) {
       cb(null, true);
     } else {
-      cb(new Error("Only png,jpg and jpeg format allowed"), false)
-
+      cb(new Error("Only png,jpg and jpeg format allowed"), false);
     }
   },
-  limits: {fileSize:limit},
-})
+  limits: { fileSize: limit },
+});
 
-const uploadMiddleware = upload.single(
-  "picture"
-);
+const uploadMiddleware = upload.single("picture");
 
 module.exports = (req, res, next) => {
   uploadMiddleware(req, res, (err) => {
     if (err) {
-      return errorHandler(err, res)
+      return errorHandler(err, res);
     }
-      next();
+    next();
   });
 };

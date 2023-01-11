@@ -16,7 +16,7 @@ const login = (req, res) => {
   selectUserByEmail(req.body.email, (err, { rows }) => {
     if (rows.length) {
       const [user] = rows;
-      if (req.body.password === user.password) {
+      if (argon.verify(req.body.password, user.password)) {
         const token = jwt.sign({ id: user.id }, "backend-secret");
         return res.status(200).json({
           success: true,
@@ -42,8 +42,7 @@ const register = async (req, res) => {
   try {
     req.body.password = await argon.hash(req.body.password);
     const user = await createUsers(req.body);
-    console.log(user)
-    const token = jwt.sign({ user }, "backend-secret");
+    const token = jwt.sign({ id: user.id }, "backend-secret");
     return res.status(200).json({
       success: true,
       message: "Register Success",
@@ -52,7 +51,7 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error) return errorHandler(error, res);
   }
 };
