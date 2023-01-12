@@ -13,10 +13,12 @@ const errorHandler = require("../helpers/errorHandler.helper");
 const argon = require("argon2");
 
 const login = (req, res) => {
-  selectUserByEmail(req.body.email, (err, { rows }) => {
+  selectUserByEmail(req.body.email, async (err, { rows }) => {
     if (rows.length) {
       const [user] = rows;
-      if (argon.verify(req.body.password, user.password)) {
+      const userPassword = await argon.hash(user.password)
+      const inputPassword = await argon.hash(req.body.password)
+      if (await argon.verify(userPassword, inputPassword)) {
         const token = jwt.sign({ id: user.id }, "backend-secret");
         return res.status(200).json({
           success: true,

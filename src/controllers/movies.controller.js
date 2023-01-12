@@ -14,7 +14,6 @@ const errorHandler = require("../helpers/errorHandler.helper");
 const filter = require("../helpers/filter.helper");
 
 const allMovies = (req, res) => {
-  console.log(req.userData);
   const sortable = [
     "title",
     "releaseDate",
