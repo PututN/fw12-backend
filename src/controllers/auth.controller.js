@@ -16,9 +16,9 @@ const login = (req, res) => {
   selectUserByEmail(req.body.email, async (err, { rows }) => {
     if (rows.length) {
       const [user] = rows;
-      const userPassword = await argon.hash(user.password)
-      const inputPassword = await argon.hash(req.body.password)
-      if (await argon.verify(userPassword, inputPassword)) {
+      // const userPassword = await argon.hash(user.password)
+      // const inputPassword = await argon.hash(req.body.password)
+      if (await argon.verify(user.password, req.body.password)) {
         const token = jwt.sign({ id: user.id }, "backend-secret");
         return res.status(200).json({
           success: true,
