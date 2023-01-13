@@ -17,7 +17,7 @@ const login = (req, res) => {
     if (rows.length) {
       const [user] = rows;
       if (await argon.verify(user.password, req.body.password)) {
-        const token = jwt.sign({ id: user.id }, "backend-secret");
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
         return res.status(200).json({
           success: true,
           message: "login success",
@@ -42,7 +42,7 @@ const register = async (req, res) => {
   try {
     req.body.password = await argon.hash(req.body.password);
     const user = await createUsers(req.body);
-    const token = jwt.sign({ id: user.id }, "backend-secret");
+    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
     return res.status(200).json({
       success: true,
       message: "Register Success",

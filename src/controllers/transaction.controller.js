@@ -96,7 +96,7 @@ const createTransactionId = (req, res) => {
 const createOrder = (req, res) => {
   const authorization = req.headers.authorization;
   const token = authorization.split(" ")[1];
-  const validated = jwt.verify(token, "backend-secret");
+  const validated = jwt.verify(token, process.env.SECRET_KEY);
   const { id } = validated;
   const transaction = {
     userId: id,
