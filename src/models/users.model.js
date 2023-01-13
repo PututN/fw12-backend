@@ -66,7 +66,7 @@ const createUsers = async (data) => {
     const newUser = await db.query(sql, value);
     return newUser.rows[0];
   } catch (error) {
-    if (error) throw error
+    if (error) throw error;
   }
 };
 
@@ -84,6 +84,46 @@ const updatedUsers = (data, id, cb) => {
   db.query(sql, value, cb);
 };
 
+const getUsersById = async (id) => {
+  try {
+    const sql = 'SELECT * FROM "users" WHERE id = $1';
+    const newUsers = await db.query(sql, [id]);
+    return newUsers.rows[0];
+  } catch (error) {
+    if (error) throw error;
+  }
+};
+
+const getPicture = async (id) => {
+  try {
+    const sql = 'SELECT * FROM "users" WHERE id = $1';
+    const newUsers = await db.query(sql, [id]);
+    return newUsers.rows[0];
+  } catch (error) {
+    if (error) throw error;
+  }
+};
+
+const updateUsers = async (data, id) => {
+  try {
+    const sql = `UPDATE users SET "firstName" = COALESCE(NULLIF($1, ''), "firstName"), "lastName" = COALESCE(NULLIF($2, ''), "lastName"), "phoneNumber" = COALESCE(NULLIF($3, ''), "phoneNumber"), "email" = COALESCE(NULLIF($4, ''), "email"), "password" = COALESCE(NULLIF($5, ''), "password"), "picture" = COALESCE(NULLIF($6, ''), "picture") WHERE id= $7 RETURNING *`;
+
+    const values = [
+      data.firstName,
+      data.lastName,
+      data.phoneNumber,
+      data.email,
+      data.password,
+      data.picture,
+      id,
+    ];
+    const newUser = await db.query(sql, values);
+    return newUser.rows[0];
+  } catch (error) {
+    if (error) throw error;
+  }
+};
+
 module.exports = {
   readAllUsers,
   readUser,
@@ -94,4 +134,6 @@ module.exports = {
   selectUserByEmail,
   getProfile,
   updateProfile,
+  updateUsers,
+  getUsersById,
 };

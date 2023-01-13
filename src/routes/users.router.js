@@ -1,5 +1,5 @@
 const usersRouter = require('express').Router()
-const uploadMiddleware = require('../middleware/upload.middleware')
+const {uploadMiddleware} = require('../middleware/upload.middleware')
 
 
 const { readAll, createAllUsers, deletedUserId, updatedUserId, readUserId } = require('../controllers/users.controller') //import dari controller
