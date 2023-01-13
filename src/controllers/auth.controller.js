@@ -14,10 +14,13 @@ const argon = require("argon2");
 
 const login = (req, res) => {
   selectUserByEmail(req.body.email, async (err, { rows }) => {
+    console.log('lapor pak')
     if (rows.length) {
       const [user] = rows;
       if (await argon.verify(user.password, req.body.password)) {
         const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+        console.log('masuk pak pak')
+
         return res.status(200).json({
           success: true,
           message: "login success",
@@ -59,6 +62,7 @@ const register = async (req, res) => {
 const forgotPassword = (req, res) => {
   const { email } = req.body;
   selectUserByEmail(email, (err, { rows: users }) => {
+    console.log(users)
     if (err) {
       return errorHandler(err, res);
     }
