@@ -27,7 +27,7 @@ const errorHandler = (err, res) => {
     err.message.includes(
       'duplicate key value violates unique constraint "users_email_key"'
     ) ||
-    err.detail.includes("already exists")
+    err.message.includes("already exists")
   ) {
     return res.status(400).json({
       success: false,

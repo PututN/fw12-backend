@@ -31,20 +31,27 @@ const idUser = (req, res) => {
 
 const newUpdateUser = async (req, res) => {
   try {
-    if (req.file) {
-      req.body.picture = req.file.path;
-      const getPicture = await getUsersById(req.userData.id);
-      const setPicture = getPicture.picture.split("/");
-      const getNumFormat = setPicture[setPicture.length - 1];
-      const getNumber = getNumFormat.split(".")[0];
-      const getDate = getNumber.split("_")[0];
-      const getRandomNum = getNumber.split("_")[1];
-      const idPicture = `${getDate}_${Number(getRandomNum)}`;
-      if (idPicture) {
+    if (req?.file) {
+      const user = await getUsersById(req.userData.id);
+      console.log(user.picture);
+      if (!user.picture) {
+        user.picture = req.file.path;
+        req.body.picture = user.picture;
+        console.log("masuk pak");
+      } else {
+        console.log("lapor pak");
+        const setPicture = user?.picture?.split("/");
+        const getNumFormat = setPicture[setPicture.length - 1];
+        const getNumber = getNumFormat.split(".")[0];
+        const getDate = getNumber.split("_")[0];
+        const getRandomNum = getNumber.split("_")[1];
+        const idPicture = `${getDate}_${Number(getRandomNum)}`;
+        user.picture = req.file.path;
+        req.body.picture = user.picture;
         await cloudinary.uploader.destroy(`cinemnar/${idPicture}`);
       }
     }
-    req.body.password = await argon.hash(req.body.password);
+    // req.body.password = await argon.hash(req.body.password);
     const updateUser = await updateUsers(req.body, req.userData.id);
     return res.status(200).json({
       success: true,
