@@ -51,7 +51,7 @@ const newUpdateUser = async (req, res) => {
         await cloudinary.uploader.destroy(`cinemnar/${idPicture}`);
       }
     }
-    req.body.password = await argon.hash(req.body.password);
+    // req.body.password = await argon.hash(req.body.password);
     const updateUser = await updateUsers(req.body, req.userData.id);
     return res.status(200).json({
       success: true,
