@@ -10,6 +10,7 @@ const fm = require("fs-extra");
 const jwt = require("jsonwebtoken");
 const { get } = require("http");
 const { cloudinary } = require("../middleware/upload.middleware");
+const argon = require("argon2");
 
 const idUser = (req, res) => {
   const authorization = req.headers.authorization;
@@ -43,6 +44,7 @@ const newUpdateUser = async (req, res) => {
         await cloudinary.uploader.destroy(`cinemnar/${idPicture}`);
       }
     }
+    req.body.password = await argon.hash(req.body.password);
     const updateUser = await updateUsers(req.body, req.userData.id);
     return res.status(200).json({
       success: true,
