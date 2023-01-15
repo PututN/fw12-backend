@@ -3,6 +3,7 @@ const {
   updateProfile,
   getUsersById,
   updateUsers,
+  updatePassword,
 } = require("../models/users.model");
 const errorHandler = require("../helpers/errorHandler.helper");
 const fs = require("fs");
@@ -31,8 +32,8 @@ const idUser = (req, res) => {
 
 const newUpdateUser = async (req, res) => {
   try {
+    const user = await getUsersById(req.userData.id);
     if (req?.file) {
-      const user = await getUsersById(req.userData.id);
       console.log(user.picture);
       if (!user.picture) {
         user.picture = req.file.path;
@@ -51,12 +52,13 @@ const newUpdateUser = async (req, res) => {
         await cloudinary.uploader.destroy(`cinemnar/${idPicture}`);
       }
     }
-    // req.body.password = await argon.hash(req.body.password);
-    const updateUser = await updateUsers(req.body, req.userData.id);
+    const setUser = await updateUsers(req.body, req.userData.id);
+    const newPassword = await argon.hash(setUser.password);
+    const putPassword = await updatePassword(newPassword, req.userData.id);
     return res.status(200).json({
       success: true,
       message: "Profile updated",
-      results: updateUser,
+      results: putPassword,
     });
   } catch (error) {
     return errorHandler(error, res);

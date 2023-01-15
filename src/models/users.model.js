@@ -124,7 +124,23 @@ const updateUsers = async (data, id) => {
   }
 };
 
+const updatePassword = async (data, id) => {
+  try {
+    const sql = `UPDATE users SET "password" = COALESCE(NULLIF($1, ''), "password") WHERE id= $2 RETURNING *`;
+
+    const values = [
+      data,
+      id,
+    ];
+    const newUser = await db.query(sql, values);
+    return newUser.rows[0];
+  } catch (error) {
+    if (error) throw error;
+  }
+};
+
 module.exports = {
+  updatePassword,
   readAllUsers,
   readUser,
   deletedUser,
