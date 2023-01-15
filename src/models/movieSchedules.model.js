@@ -4,9 +4,15 @@ const modelAllMovieSchedules = (data, cb) => {
   db.query('SELECT * FROM "movieSchedules"', cb)
 }
 
-const modelMovieScheduleId = (data, cb) => {
-  const sql = `SELECT * FROM "movieSchedules" WHERE id=$1`
-  const value = [data.id]
+const modelMovieScheduleId = (id, city, cb) => {
+  console.log(id, city)
+  const sql = `SELECT ms.id, ms."movieId", ms."cinemaId", price, "startDate", "endDate", c.name AS "cinemaName", c.address, c.city FROM "movieSchedules" ms
+  JOIN cinemas c ON c.id = ms."cinemaId"
+  JOIN "movieScheduleTimes" mst ON mst."movieScheduleId" = ms.id
+  WHERE ms."movieId" = $1 AND c.city = $2
+  GROUP BY ms.id, c.picture, c.name, c.address, c.city;`
+  console.log('masuk pak')
+  const value = [id, city]
   db.query(sql, value, cb)
 }
 

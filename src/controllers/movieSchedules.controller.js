@@ -18,8 +18,8 @@ const allMovieSchedules = (req, res) => {
 }
 
 const movieScheduleId = (req,res) => {
-
-  modelMovieScheduleId(req.params, (err,data) => {
+console.log(req.params)
+  modelMovieScheduleId(req.params.id, req.params.city, (err,data) => {
     if(err) {
       return errorHandler(err,res)
     }
