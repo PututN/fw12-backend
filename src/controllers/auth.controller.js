@@ -14,12 +14,12 @@ const argon = require("argon2");
 
 const login = (req, res) => {
   selectUserByEmail(req.body.email, async (err, { rows }) => {
-    console.log('lapor pak')
+    console.log("lapor pak");
     if (rows.length) {
       const [user] = rows;
       if (await argon.verify(user.password, req.body.password)) {
         const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
-        console.log('masuk pak pak')
+        console.log("masuk pak pak");
 
         return res.status(200).json({
           success: true,
@@ -62,7 +62,7 @@ const register = async (req, res) => {
 const forgotPassword = (req, res) => {
   const { email } = req.body;
   selectUserByEmail(email, (err, { rows: users }) => {
-    console.log(users)
+    console.log(users);
     if (err) {
       return errorHandler(err, res);
     }
@@ -96,6 +96,7 @@ const forgotPassword = (req, res) => {
 const resetPassword = (req, res) => {
   const { password, confirmPassword } = req.body; //destruc dari req.body
   if (password === confirmPassword) {
+    console.log(req.body);
     selectUserByEmailAndCode(req.body, (err, { rows: users }) => {
       if (err) {
         return errorHandler(err, res);
@@ -124,6 +125,11 @@ const resetPassword = (req, res) => {
             }
           }
         );
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Code is not correct!",
+        });
       }
     });
   } else {
