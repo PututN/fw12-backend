@@ -128,7 +128,7 @@ const resetPassword = (req, res) => {
       } else {
         return res.status(400).json({
           success: false,
-          message: "Code or email is not correct!",
+          message: "Code is not correct!",
         });
       }
     });
