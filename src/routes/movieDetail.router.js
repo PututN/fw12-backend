@@ -5,6 +5,6 @@ const {
 } = require("../controllers/movieDetail.controller");
 
 movieDetail.get("/:id/schedules/city", getScheduleByCity);
-// movieDetail.get("/:id/schedules", getScheduleByMovieId);
+movieDetail.get("/:id/schedules", getScheduleByMovieId);
 
 module.exports = movieDetail;

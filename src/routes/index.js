@@ -18,6 +18,7 @@ routes.use('/resetPassword', authMiddleware, require('./resetPassword.router'))
 routes.use('/cinemas', authMiddleware, require('./cinemas.router'))
 routes.use('/movieSchedules', authMiddleware, require('./movieSchedules.router'))
 routes.use('/transaction', authMiddleware, require('./transaction.router'))
+
 routes.use('/movieDetail', authMiddleware, require('./movieDetail.router'))
 
 routes.use('/auth', require('./auth.router') )
