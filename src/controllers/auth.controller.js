@@ -97,15 +97,15 @@ const resetPassword = (req, res) => {
   const { password, confirmPassword } = req.body; //destruc dari req.body
   if (password === confirmPassword) {
     console.log(req.body);
-    selectUserByEmailAndCode(req.body, (err, { rows: users }) => {
+    selectUserByEmailAndCode(req.body, async (err, { rows: users }) => {
       if (err) {
         return errorHandler(err, res);
       }
       if (users.length) {
         const [resetRequest] = users;
-
+        const newPassword = await argon.hash(password);
         updatedUsers(
-          { password },
+          { password: newPassword },
           resetRequest.userId,
           (err, { rows: users }) => {
             if (err) {
@@ -114,7 +114,6 @@ const resetPassword = (req, res) => {
             if (users.length) {
               //users disini dari distraction line 105
               modelDeleteResetPassword(resetRequest.userId, (err, { rows }) => {
-                console.log(rows);
                 if (!rows.length) {
                   return res.status(200).json({
                     success: true,
