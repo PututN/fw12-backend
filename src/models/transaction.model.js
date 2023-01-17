@@ -11,9 +11,9 @@ const selectCountAllTransaction = (filter, cb) => {
   db.query(sql, values, cb);
 };
 
-const modelTransactionId = (data, cb) => {
-  const sql = `SELECT * FROM transaction WHERE id=$1`;
-  const value = [data.id];
+const modelTransactionId = (id, cb) => {
+  const sql = `SELECT * FROM transaction WHERE "userId"=$1`;
+  const value = [id];
   db.query(sql, value, cb);
 };
 

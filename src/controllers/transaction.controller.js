@@ -42,14 +42,19 @@ const allTransaction = (req, res) => {
 };
 
 const transactionId = (req, res) => {
-  modelTransactionId(req.params, (err, data) => {
+  const authorization = req.headers.authorization;
+  const token = authorization.split(" ")[1];
+  const validated = jwt.verify(token, process.env.SECRET_KEY);
+  const { id } = validated;
+  console.log(id)
+  modelTransactionId(id, (err, data) => {
     if (err) {
       return errorHandler(err, res);
     }
     return res.status(200).json({
       success: true,
       message: "ID Data Transaction success",
-      results: data.rows[0],
+      results: data.rows,
     });
   });
 };
