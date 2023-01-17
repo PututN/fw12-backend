@@ -110,6 +110,8 @@ const createOrder = (req, res) => {
     seatNum: req.body.seatNum,
     cinemaId: req.body.cinemaId,
     movieScheduleId: req.body.movieScheduleId,
+    time: req.body.time,
+    totalPrice: req.body.totalPrice,
   };
   modelCreateOrder(transaction, (err, result) => {
     if (err) {
