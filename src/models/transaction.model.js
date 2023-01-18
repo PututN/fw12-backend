@@ -101,6 +101,24 @@ const modelCreateOrder = async (data, cb) => {
   }
 };
 
+const modelHistoryById = async (data) => {
+  try {
+    const sql = `SELECT m.title, t."bookingDate", t.time, t."totalPrice", rS."seatNum",  string_agg(DISTINCT g.name,', ') AS genre FROM "reversedSeat" rS
+    JOIN transaction t ON t.id = rS."transactionId"
+    JOIN cinemas c ON t."cinemaId" = c.id
+    JOIN movies m ON t."movieId" = m.id
+    JOIN "movieGenre" mg ON mg."movieId" = m.id
+    JOIN genre g ON g.id = mg."genreId"
+    WHERE rS.id=$1
+    GROUP BY c.picture, t."bookingDate", t.time, m.title, rS.id, t."totalPrice"`;
+    const value = [data.id];
+    const results = await db.query(sql, value);
+    return results.rows[0];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   modelAllTransaction,
   modelTransactionId,
@@ -109,4 +127,5 @@ module.exports = {
   modelCreateTransaction,
   selectCountAllTransaction,
   modelCreateOrder,
+  modelHistoryById,
 };

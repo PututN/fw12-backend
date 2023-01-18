@@ -6,6 +6,7 @@ const {
   modelCreateTransaction,
   selectCountAllTransaction,
   modelCreateOrder,
+  modelHistoryById,
 } = require("../models/transaction.model");
 const errorHandler = require("../helpers/errorHandler.helper");
 const filter = require("../helpers/filter.helper");
@@ -46,7 +47,7 @@ const transactionId = (req, res) => {
   const token = authorization.split(" ")[1];
   const validated = jwt.verify(token, process.env.SECRET_KEY);
   const { id } = validated;
-  console.log(id)
+  console.log(id);
   modelTransactionId(id, (err, data) => {
     if (err) {
       return errorHandler(err, res);
@@ -130,6 +131,19 @@ const createOrder = (req, res) => {
   });
 };
 
+const historyId = async (req, res) => {
+  try {
+    const historyUser = await modelHistoryById(req.params);
+    return res.status(200).json({
+      success: true,
+      message: "History ID Success",
+      results: historyUser,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   allTransaction,
   transactionId,
@@ -137,4 +151,5 @@ module.exports = {
   updateTransactionId,
   createTransactionId,
   createOrder,
+  historyId,
 };
