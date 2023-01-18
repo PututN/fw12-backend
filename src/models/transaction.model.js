@@ -17,7 +17,8 @@ const modelTransactionId = (id, cb) => {
   t.time,
   m.title,
   string_agg(DISTINCT g.name,', ') AS genre,
-  string_agg(DISTINCT rS."seatNum",', ') AS SeatNum
+  string_agg(DISTINCT rS."seatNum",', ') AS SeatNum,
+  t.id
   FROM transaction t
   JOIN cinemas c ON t."cinemaId" = c.id
   JOIN movies m ON t."movieId" = m.id
@@ -25,7 +26,7 @@ const modelTransactionId = (id, cb) => {
   JOIN genre g ON g.id = mg."genreId"
   JOIN "reversedSeat" rS ON rS."transactionId" = t.id
   WHERE t."userId"=$1
-  GROUP BY c.picture, t."bookingDate", t.time, m.title`;
+  GROUP BY c.picture, t."bookingDate", t.time, m.title, t.id`;
   const value = [id];
   db.query(sql, value, cb);
 };
@@ -104,17 +105,20 @@ const modelCreateOrder = async (data, cb) => {
 
 const modelHistoryById = async (data) => {
   try {
-    const sql = `SELECT m.title, t."bookingDate", t.time, t."totalPrice", rS."seatNum",  string_agg(DISTINCT g.name,', ') AS genre FROM "reversedSeat" rS
-    JOIN transaction t ON t.id = rS."transactionId"
+    // const coba = `SELECT rS.* FROM "reversedSeat" rS
+    // JOIN transaction t ON t.id = rS."transactionId"
+    // WHERE t.id=$1`
+    const sql = `SELECT m.title, t."bookingDate", t.time, t."totalPrice", string_agg(DISTINCT "rS"."seatNum",', ') AS seatNum,  string_agg(DISTINCT g.name,', ') AS genre FROM transaction t
+    JOIN "reversedSeat" "rS" ON t.id = "rS"."transactionId"
     JOIN cinemas c ON t."cinemaId" = c.id
     JOIN movies m ON t."movieId" = m.id
     JOIN "movieGenre" mg ON mg."movieId" = m.id
     JOIN genre g ON g.id = mg."genreId"
-    WHERE rS.id=$1
-    GROUP BY c.picture, t."bookingDate", t.time, m.title, rS.id, t."totalPrice"`;
+    WHERE t.id=$1
+    GROUP BY c.picture, t."bookingDate", t.time, m.title, t."totalPrice"`;
     const value = [data.id];
     const results = await db.query(sql, value);
-    return results.rows[0];
+    return results.rows;
   } catch (err) {
     console.log(err);
   }
