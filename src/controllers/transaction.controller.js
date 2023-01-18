@@ -137,7 +137,7 @@ const historyId = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "History ID Success",
-      results: historyUser,
+      results: historyUser[0],
     });
   } catch (err) {
     console.log(err);
