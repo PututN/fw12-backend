@@ -12,7 +12,20 @@ const selectCountAllTransaction = (filter, cb) => {
 };
 
 const modelTransactionId = (id, cb) => {
-  const sql = `SELECT * FROM transaction WHERE "userId"=$1`;
+  const sql = `SELECT c.picture,
+  t."bookingDate",
+  t.time,
+  m.title,
+  string_agg(DISTINCT g.name,', ') AS genre,
+  rS.*
+  FROM transaction t
+  JOIN cinemas c ON t."cinemaId" = c.id
+  JOIN movies m ON t."movieId" = m.id
+  JOIN "movieGenre" mg ON mg."movieId" = m.id
+  JOIN genre g ON g.id = mg."genreId"
+  JOIN "reversedSeat" rS ON rS."transactionId" = t.id
+  WHERE t."userId"=$1
+  GROUP BY c.picture, t."bookingDate", t.time, m.title, rS.id`;
   const value = [id];
   db.query(sql, value, cb);
 };
