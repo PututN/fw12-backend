@@ -86,7 +86,7 @@ const modelCreateOrder = async (data, cb) => {
       data.time,
       data.totalPrice,
     ]);
-    const seats = data.seatNum.map(num => `(${num}, ${sql.rows[0].id})`).join(', ')
+    const seats = data.seatNum.map(num => `('${num}', ${sql.rows[0].id})`).join(', ')
     const insertSeatNum = `INSERT INTO "reversedSeat" ("seatNum", "transactionId") VALUES ${seats} RETURNING *`;
     // const insertSeatNumValues = [data.seatNum, sql.rows[0].id];
     const sqlseat = await db.query(insertSeatNum);
