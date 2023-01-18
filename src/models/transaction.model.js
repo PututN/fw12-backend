@@ -86,18 +86,19 @@ const modelCreateOrder = async (data, cb) => {
       data.time,
       data.totalPrice,
     ]);
-    const insertSeatNum = `INSERT INTO "reversedSeat" ("seatNum", "transactionId") VALUES ($1, $2) RETURNING *`;
-    const insertSeatNumValues = [data.seatNum, sql.rows[0].id];
-    const sqlseat = await db.query(insertSeatNum, insertSeatNumValues);
+    const seats = data.seatNum.map(num => `(${num}, ${sql.rows[0].id})`).join(', ')
+    const insertSeatNum = `INSERT INTO "reversedSeat" ("seatNum", "transactionId") VALUES ${seats} RETURNING *`;
+    // const insertSeatNumValues = [data.seatNum, sql.rows[0].id];
+    const sqlseat = await db.query(insertSeatNum);
     await db.query("COMMIT");
     const dataOrder = {
       transaction: sql.rows[0],
       seatNum: sqlseat.rows,
     };
-    cb(null, dataOrder); // data order disini mengembalikan result dalam bentuk object (controller) (err,result)
+    cb(null, dataOrder);
   } catch (e) {
     await db.query("ROLLBACK");
-    cb(e, null); //cb (err,result) >> kondisinya error
+    cb(e, null);
   }
 };
 
