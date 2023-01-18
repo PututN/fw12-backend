@@ -17,7 +17,7 @@ const modelTransactionId = (id, cb) => {
   t.time,
   m.title,
   string_agg(DISTINCT g.name,', ') AS genre,
-  rS.*
+  string_agg(DISTINCT rS."seatNum",', ') AS SeatNum
   FROM transaction t
   JOIN cinemas c ON t."cinemaId" = c.id
   JOIN movies m ON t."movieId" = m.id
@@ -25,7 +25,7 @@ const modelTransactionId = (id, cb) => {
   JOIN genre g ON g.id = mg."genreId"
   JOIN "reversedSeat" rS ON rS."transactionId" = t.id
   WHERE t."userId"=$1
-  GROUP BY c.picture, t."bookingDate", t.time, m.title, rS.id`;
+  GROUP BY c.picture, t."bookingDate", t.time, m.title`;
   const value = [id];
   db.query(sql, value, cb);
 };
