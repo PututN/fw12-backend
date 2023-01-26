@@ -11,10 +11,10 @@ const {
 const jwt = require("jsonwebtoken");
 const errorHandler = require("../helpers/errorHandler.helper");
 const argon = require("argon2");
+const { mailOptions, transport } = require("../helpers/mailer.helper");
 
 const login = (req, res) => {
   selectUserByEmail(req.body.email, async (err, { rows }) => {
-    console.log("lapor pak");
     if (rows.length) {
       const [user] = rows;
       if (await argon.verify(user.password, req.body.password)) {
@@ -61,33 +61,43 @@ const register = async (req, res) => {
 
 const forgotPassword = (req, res) => {
   const { email } = req.body;
-  selectUserByEmail(email, (err, { rows: users }) => {
-    console.log(users);
+  selectUserByEmail(email, async (err, { rows: users }) => {
     if (err) {
       return errorHandler(err, res);
     }
-    if (users.length) {
-      const [user] = users;
-      const data = {
-        email,
-        userId: user.id,
-        code: Math.ceil(Math.random() * 90000),
-      };
-      modelCreatePassword(data, (err, { rows: results }) => {
-        if (err) {
-          return errorHandler(err, res);
-        }
-        if (results.length) {
-          return res.status(200).json({
-            success: true,
-            message: "Reset password has been requested.",
-          });
-        }
-      });
-    } else {
-      return res.status(400).json({
+    try {
+      if (users.length) {
+        const [user] = users;
+        const code = String(Math.ceil(Math.random() * 90000)).padEnd(6, "0");
+        const data = {
+          email,
+          userId: user.id,
+          code,
+        };
+        const mailer = await transport();
+        await mailer.sendMail(mailOptions(email, code));
+        modelCreatePassword(data, (err, { rows: results }) => {
+          if (err) {
+            return errorHandler(err, res);
+          }
+          if (results.length) {
+            return res.status(200).json({
+              success: true,
+              message: "Reset password has been requested.",
+            });
+          }
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
         success: false,
-        message: "User not found",
+        message: "Failed to request.",
       });
     }
   });
