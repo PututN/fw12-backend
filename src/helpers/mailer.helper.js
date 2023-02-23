@@ -13,19 +13,23 @@ myOAuth2Client.setCredentials({
 });
 
 exports.transport = async () => {
-  const accessToken = await myOAuth2Client.getAccessToken();
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: process.env.EMAIL_SENDER, //your gmail account you used to set the project up in google cloud console"
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      refreshToken: process.env.REFRESH_TOKEN,
+  try {
+    const accessToken = await myOAuth2Client.getAccessToken();
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_SENDER, //your gmail account you used to set the project up in google cloud console"
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
 
-      accessToken,
-    },
-  });
+        accessToken,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.mailOptions = (sendTo, code) => {

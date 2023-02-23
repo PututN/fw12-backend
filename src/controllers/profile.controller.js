@@ -38,9 +38,7 @@ const newUpdateUser = async (req, res) => {
       if (!user.picture) {
         user.picture = req.file.path;
         req.body.picture = user.picture;
-        console.log("masuk pak");
       } else {
-        console.log("lapor pak");
         const setPicture = user?.picture?.split("/");
         const getNumFormat = setPicture[setPicture.length - 1];
         const getNumber = getNumFormat.split(".")[0];
